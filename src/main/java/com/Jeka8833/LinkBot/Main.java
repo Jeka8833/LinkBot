@@ -15,10 +15,13 @@ public class Main {
         KPI.init();
 
         System.out.println(KPI.getCurrentLesson(KPI.getWeek(2, 0)));
-        for(Lesson lesson : Objects.requireNonNull(KPI.getDayLessons(KPI.getWeek(2, 0))))
+        for (Lesson lesson : Objects.requireNonNull(KPI.getDayLessons(KPI.getWeek(2, 0))))
             System.out.println(lesson);
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        botsApi.registerBot(new BotSetup(getParam(args, "-name"), getParam(args, "-token")));
+        if (args.length > 0)
+            botsApi.registerBot(new BotSetup(getParam(args, "-name"), getParam(args, "-token")));
+        else
+            botsApi.registerBot(new BotSetup(System.getenv("NAME"), System.getenv("TOKEN")));
     }
 
     private static String getParam(final String[] args, final String key) {

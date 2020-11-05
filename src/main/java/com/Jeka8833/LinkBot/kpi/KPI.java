@@ -15,7 +15,7 @@ public class KPI {
 
     private static final String url = "https://api.rozklad.org.ua/v2/groups/%D0%B4%D0%BF-01/lessons";
     private static final Gson gson = new Gson();
-    private static final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Kiev"));
+    public static final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Kiev"));
 
     public static List<Lesson> lessons;
 
