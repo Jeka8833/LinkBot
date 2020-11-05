@@ -15,7 +15,11 @@ public class Config {
     public static Config config;
 
     public static void init() {
-        config = gson.fromJson(Util.readSite(url), Config.class);
+        try {
+            config = gson.fromJson(Util.readSite(url), Config.class);
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
 }
