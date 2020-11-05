@@ -1,1 +1,1 @@
-bot: java -jar build/libs/example_telegram_bot-1.0-all.jar
+web: java $JAVA_OPTS -cp build/staging:build/staging/* com.pengrad.Main

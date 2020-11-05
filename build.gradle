@@ -1,24 +1,19 @@
-plugins {
+apply plugin: 'java'
 
-    id 'java'
-}
-sourceCompatibility = 11
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 group 'com.Jeka8833'
 version '1.0.0.1'
 
-task stage() {
-    dependsOn clean, war
-}
-war.mustRunAfter clean
+compileJava.options.encoding = 'UTF-8'
 
-task copyToLib(type: Copy) {
-    into "$buildDir/server"
-    from(configurations.compile) {
-        include "webapp-runner*"
-    }
+task stage(type: Copy) {
+    from sourceSets.main.runtimeClasspath
+    into 'build/staging'
 }
+stage.dependsOn build
 
-stage.dependsOn(copyToLib)
 repositories {
     mavenCentral()
 }
