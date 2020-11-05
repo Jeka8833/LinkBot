@@ -39,7 +39,8 @@ public class BotSetup extends TelegramLongPollingBot {
             String[] arg = update.getMessage().getText().split(" ", 1);
             if (commandMap.containsKey(arg[0].toLowerCase()))
                 commandMap.get(arg[0].toLowerCase()).receiveListener(update, arg[1]);
-            /*SendMessage message = new SendMessage();
+            System.out.println(update.getMessage().getChatId() + " -> " + update.getMessage().getText());
+           /* SendMessage message = new SendMessage();
             message.setChatId(String.valueOf(update.getMessage().getChatId()));
             message.setText(update.getMessage().getText());
             try {
