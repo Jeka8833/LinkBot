@@ -17,7 +17,7 @@ public class Util {
             while ((length = inputStream.read(buffer)) != -1) {
                 result.write(buffer, 0, length);
             }
-            return result.toString(StandardCharsets.UTF_8);
+            return result.toString("UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
