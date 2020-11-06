@@ -19,7 +19,7 @@ public class Now implements Command {
     public void receiveListener(Update update, String text) {
         Lesson lesson = KPI.getCurrentLesson(KPI.getWeek());
         if (lesson == null)
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Сейчас уже ничего не будет");
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Уже ничего не будет");
         else
             Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Сейчас будет или уже идёт пара:" +
                     "\nПара: " + lesson.lesson_number + "(" + lesson.time_start + " - " + lesson.time_end + ")" +
