@@ -1,11 +1,13 @@
 package com.Jeka8833.LinkBot;
 
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class Util {
 
@@ -22,6 +24,18 @@ public class Util {
             e.printStackTrace();
         }
         throw new NullPointerException("Fail connect or read site -> " + url);
+    }
+
+    public static void sendMessage(final TelegramLongPollingBot bot, final String chatId, final String text){
+        final SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.enableMarkdown(true);
+        message.setText(text);
+        try {
+            bot.execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
 }

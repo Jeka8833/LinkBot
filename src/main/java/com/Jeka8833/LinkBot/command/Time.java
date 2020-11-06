@@ -1,10 +1,11 @@
 package com.Jeka8833.LinkBot.command;
 
+import com.Jeka8833.LinkBot.MySQL;
+import com.Jeka8833.LinkBot.Util;
 import com.Jeka8833.LinkBot.kpi.KPI;
+import com.Jeka8833.LinkBot.kpi.Lesson;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Time implements Command {
 
@@ -15,14 +16,21 @@ public class Time implements Command {
     }
 
     @Override
-    public void receiveListener(final Update update,final String text) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(update.getMessage().getChatId()));
-        message.setText(update.getMessage().getText() + KPI.calendar);
-        try {
-            pollingBot.execute(message); // Call method to send the message
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+    public void receiveListener(final Update update, final String text) {
+        final Lesson lesson = KPI.getCurrentLesson(KPI.getWeek());
+        if (lesson == null) {
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Всё закончилось");
+        } else if (lesson.timeToStart() > KPI.getCurrentTimeInSecond()) {
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До начала осталось: " + toTimeFormat(lesson.timeToStart() - KPI.getCurrentTimeInSecond()));
+        } else if (lesson.timeToEnd() > KPI.getCurrentTimeInSecond()) {
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До конца осталось: " + toTimeFormat(lesson.timeToEnd() - KPI.getCurrentTimeInSecond()));
         }
+    }
+
+    private static String toTimeFormat(final int second) {
+        int hours = second / 3600;
+        int mins = second / 60 % 60;
+        int secs = second % 60;
+        return hours + ":" + mins + ":" + secs;
     }
 }
