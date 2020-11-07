@@ -3,7 +3,6 @@ package com.Jeka8833.LinkBot.kpi;
 import com.Jeka8833.LinkBot.MySQL;
 import com.Jeka8833.LinkBot.Util;
 import com.google.gson.Gson;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,23 +28,17 @@ public class KPI {
         return (int) (((calendar.getTimeInMillis() / (1000 * 60 * 60 * 24 * 7)) + MySQL.shiftWeek) % 2);
     }
 
-    public static @Nullable List<Lesson> getDayLessons(final int week) {
+    public static List<Lesson> getDayLessons(final int week) {
         calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Kiev"));
-        final List<Lesson> lessons = new ArrayList<>();
         final int dayNumber = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         // Sunday
         if (dayNumber < 0)
             return null;
-        for (Lesson lesson : KPI.lessons)
-            if (lesson.lesson_week == week + 1 && lesson.day_number == dayNumber)
-                lessons.add(lesson);
-        lessons.sort(null);
-        return lessons;
+        return getDayLessons(week, dayNumber);
     }
 
     public static List<Lesson> getDayLessons(final int week, final int day){
         final List<Lesson> lessons = new ArrayList<>();
-        // Sunday
         for (Lesson lesson : KPI.lessons)
             if (lesson.lesson_week == week + 1 && lesson.day_number == day)
                 lessons.add(lesson);
@@ -53,7 +46,7 @@ public class KPI {
         return lessons;
     }
 
-    public static @Nullable Lesson getCurrentLesson(final int week) {
+    public static Lesson getCurrentLesson(final int week) {
         final List<Lesson> lessons = getDayLessons(week);
         if (lessons == null)
             return null;
@@ -64,7 +57,7 @@ public class KPI {
         return null;
     }
 
-    public static @Nullable Lesson getNextLesson(final int week) {
+    public static Lesson getNextLesson(final int week) {
         final List<Lesson> lessons = getDayLessons(week);
         if (lessons == null)
             return null;

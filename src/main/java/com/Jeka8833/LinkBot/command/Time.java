@@ -1,6 +1,5 @@
 package com.Jeka8833.LinkBot.command;
 
-import com.Jeka8833.LinkBot.MySQL;
 import com.Jeka8833.LinkBot.Util;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
@@ -31,6 +30,6 @@ public class Time implements Command {
         int hours = second / 3600;
         int mins = second / 60 % 60;
         int secs = second % 60;
-        return hours + ":" + mins + ":" + secs;
+        return (hours < 10 ? "0" : "") + hours + ":" + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
     }
 }

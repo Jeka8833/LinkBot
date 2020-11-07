@@ -9,8 +9,8 @@ import java.util.Map;
 public class MySQL {
 
     public static Integer shiftWeek = 0;
-    public static Map<Integer, String> urls = new HashMap<>();
-    public static List<User> users = new ArrayList<>();
+    public static final Map<Integer, String> urls = new HashMap<>();
+    public static final List<User> users = new ArrayList<>();
 
     private static Connection connection;
     private static Statement statement;
@@ -29,7 +29,7 @@ public class MySQL {
 
     private static void checkConnection() {
         try {
-            if (connection.isClosed()) {
+            if (!connection.isValid(1)) {
                 reconnect();
             }
         } catch (SQLException throwables) {
@@ -82,20 +82,20 @@ public class MySQL {
     public static void write() {
         checkConnection();
         try {
-            statement.executeQuery("REPLACE INTO " + bdName + ".setting(idsetting, parametr, value) VALUES(0,'weekShift', " + shiftWeek + ");").close();
+            statement.executeUpdate("REPLACE INTO " + bdName + ".setting(idsetting, parametr, value) VALUES(0,'weekShift', " + shiftWeek + ");");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         for (Map.Entry<Integer, String> entry : urls.entrySet()) {
             try {
-                statement.executeQuery("REPLACE INTO " + bdName + ".link(lessonId, linkcol) VALUES(" + entry.getKey() + ", '" + entry.getValue() + "');").close();
+                statement.executeUpdate("REPLACE INTO " + bdName + ".link(lessonId, linkcol) VALUES(" + entry.getKey() + ", '" + entry.getValue() + "');");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         for (User user : users) {
             try {
-                statement.executeQuery("REPLACE INTO " + bdName + ".notification(user_id, notification, isAdmin) VALUES(" + user.chatId + ", " + user.isNotification + ", " + user.isAdmin + ");").close();
+                statement.executeUpdate("REPLACE INTO " + bdName + ".notification(user_id, notification, isAdmin) VALUES(" + user.chatId + ", " + user.isNotification + ", " + user.isAdmin + ");");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
