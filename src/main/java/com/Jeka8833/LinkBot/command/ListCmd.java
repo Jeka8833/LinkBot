@@ -21,17 +21,21 @@ public class ListCmd implements Command {
 
     @Override
     public void receiveListener(Update update, String text) {
+        final int nowWeek = KPI.getWeek();
         StringBuilder sb = new StringBuilder();
         for (int week = 1; week <= 2; week++) {
-            sb.append("_Неделя ").append(week).append("_\n");
+            sb.append("_Неделя ").append(week);
+            if (nowWeek == week - 1)
+                sb.append("(Текущая)");
+            sb.append("_\n");
             for (int day = 1; day <= 6; day++) {
                 List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day);
-                if(dayLesson.isEmpty())
+                if (dayLesson.isEmpty())
                     continue;
                 sb.append(dayName[day - 1]).append('\n');
                 for (Lesson lesson : dayLesson) {
                     sb.append(lesson.lesson_number).append(") ").append(lesson.lesson_name).append(" `").append(lesson.lesson_type).append('`');
-                    if(text.equalsIgnoreCase("root")){
+                    if (text.equalsIgnoreCase("root")) {
                         sb.append(" -> ").append(lesson.lesson_id);
                     }
                     sb.append('\n');
