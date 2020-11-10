@@ -32,7 +32,7 @@ public class Start implements Command {
         one.add("/next");
         KeyboardRow two = new KeyboardRow();
         two.add("/list");
-        //two.add("/now");
+        two.add("/notification");
         two.add("/help");
         keyboard.add(one);
         keyboard.add(two);
