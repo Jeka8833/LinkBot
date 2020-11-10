@@ -45,6 +45,8 @@ public class BotSetup extends TelegramLongPollingBot {
                 }
 
                 for (User user : MySQL.users) {
+                    if (user.notification == 0)
+                            continue;
                     for (int i = 0; i < secondList.size(); i++) {
                         if (user.notification == secondList.get(i)) {
                             final Lesson lesson = lessons.get(i);
