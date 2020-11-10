@@ -95,7 +95,7 @@ public class MySQL {
         }
         for (User user : users) {
             try {
-                statement.executeUpdate("REPLACE INTO " + bdName + ".notification(user_id, notification, isAdmin) VALUES(" + user.chatId + ", " + user.isNotification + ", " + user.isAdmin + ");");
+                statement.executeUpdate("REPLACE INTO " + bdName + ".notification(user_id, notification, isAdmin) VALUES(" + user.chatId + ", " + user.notification + ", " + user.isAdmin + ");");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

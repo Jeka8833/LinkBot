@@ -23,7 +23,6 @@ public class Next implements Command {
         else
             Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Следующая пара:" +
                     "\nПара: " + lesson.lesson_number + "(" + lesson.time_start + " - " + lesson.time_end + ")" +
-                    "\nИндекс: " + lesson.lesson_id +
                     "\nНазвание: " + lesson.lesson_name +
                     "\nТип: " + lesson.lesson_type +
                     "\nПреподаватель: " + lesson.teacher_name +

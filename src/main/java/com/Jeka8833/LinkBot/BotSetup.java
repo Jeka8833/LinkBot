@@ -1,11 +1,12 @@
 package com.Jeka8833.LinkBot;
 
 import com.Jeka8833.LinkBot.command.*;
+import com.Jeka8833.LinkBot.kpi.KPI;
+import com.Jeka8833.LinkBot.kpi.Lesson;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BotSetup extends TelegramLongPollingBot {
 
@@ -26,6 +27,39 @@ public class BotSetup extends TelegramLongPollingBot {
         commandMap.put("/help", new Help(this));
         commandMap.put("/notification", new Notification(this));
         commandMap.put("/start", new Start(this));
+
+        final TelegramLongPollingBot pollingBot = this;
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                final List<Lesson> lessons = KPI.getDayLessons(KPI.getWeek());
+                if (lessons == null)
+                    return;
+
+                List<Integer> secondList = new ArrayList<>(lessons.size());
+                final int time = KPI.getCurrentTimeInSecond();
+
+                for (Lesson lesson : lessons) {
+                    secondList.add((lesson.timeToStart() - time) / 60);
+                }
+
+                for (User user : MySQL.users) {
+                    for (int i = 0; i < secondList.size(); i++) {
+                        if (user.notification == secondList.get(i)) {
+                            final Lesson lesson = lessons.get(i);
+                            Util.sendMessage(pollingBot, user.chatId + "", "Скоро будет пара:" +
+                                    "\nПара: " + lesson.lesson_number + "(" + lesson.time_start + " - " + lesson.time_end + ")" +
+                                    "\nНазвание: " + lesson.lesson_name +
+                                    "\nТип: " + lesson.lesson_type +
+                                    "\nПреподаватель: " + lesson.teacher_name +
+                                    "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-"));
+                            break;
+                        }
+                    }
+                }
+            }
+        }, 0, 60 * 1000);
     }
 
     @Override
@@ -44,6 +78,7 @@ public class BotSetup extends TelegramLongPollingBot {
             final long chatId = update.getMessage().getChatId();
             final String messageText = update.getMessage().getText();
             System.out.println(update.getMessage().getFrom().getFirstName() + " " + chatId + " -> " + messageText);
+
             if (throttle.containsKey(chatId)) {
                 if (throttle.get(chatId) + 1000 > System.currentTimeMillis()) {
                     Util.sendMessage(this, chatId + "", "Не спамь скотиняка");
