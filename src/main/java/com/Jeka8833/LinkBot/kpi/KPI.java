@@ -23,21 +23,25 @@ public class KPI {
         lessons = gson.fromJson(Util.readSite(url), KPI.class).data;
     }
 
+    public static int getTimeInSecond() {
+        updateTime();
+        return calendar.get(Calendar.HOUR_OF_DAY) * 3600 + calendar.get(Calendar.MINUTE) * 60 + calendar.get(Calendar.SECOND);
+    }
+
+    private static void updateTime() {
+        calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Kiev"));
+    }
+
     public static int getWeek() {
-        calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Kiev"));
-        return (int) (((calendar.getTimeInMillis() / (1000 * 60 * 60 * 24 * 7)) + MySQL.shiftWeek) % 2);
+        updateTime();
+        return (calendar.get(Calendar.WEEK_OF_YEAR) + MySQL.shiftWeek) % 2;
     }
 
-    public static List<Lesson> getDayLessons(final int week) {
-        calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Kiev"));
-        final int dayNumber = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        // Sunday
-        if (dayNumber < 0)
-            return null;
-        return getDayLessons(week, dayNumber);
+    public static int getDay(){
+        return calendar.get(Calendar.DAY_OF_WEEK) - 1;
     }
 
-    public static List<Lesson> getDayLessons(final int week, final int day){
+    public static List<Lesson> getDayLessons(final int week, final int day) {
         final List<Lesson> lessons = new ArrayList<>();
         for (Lesson lesson : KPI.lessons)
             if (lesson.lesson_week == week + 1 && lesson.day_number == day)
@@ -46,11 +50,20 @@ public class KPI {
         return lessons;
     }
 
+    public static List<Lesson> getDayLessons(final int week) {
+        updateTime();
+        final int dayNumber = getDay();
+        // Sunday
+        if (dayNumber < 0)
+            return null;
+        return getDayLessons(week, dayNumber);
+    }
+
     public static Lesson getCurrentLesson(final int week) {
         final List<Lesson> lessons = getDayLessons(week);
         if (lessons == null)
             return null;
-        final int currentTime = getCurrentTimeInSecond();
+        final int currentTime = getTimeInSecond();
         for (Lesson lesson : lessons)
             if (lesson.timeToEnd() > currentTime)
                 return lesson;
@@ -61,15 +74,10 @@ public class KPI {
         final List<Lesson> lessons = getDayLessons(week);
         if (lessons == null)
             return null;
-        final int currentTime = getCurrentTimeInSecond();
+        final int currentTime = getTimeInSecond();
         for (int i = 0; i < lessons.size() - 1; i++)
             if (lessons.get(i).timeToEnd() > currentTime)
                 return lessons.get(i + 1);
         return null;
-    }
-
-    public static int getCurrentTimeInSecond() {
-        calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Kiev"));
-        return calendar.get(Calendar.HOUR_OF_DAY) * 60 * 60 + calendar.get(Calendar.MINUTE) * 60 + calendar.get(Calendar.SECOND);
     }
 }

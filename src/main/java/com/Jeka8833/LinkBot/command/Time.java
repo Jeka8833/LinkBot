@@ -19,10 +19,10 @@ public class Time implements Command {
         final Lesson lesson = KPI.getCurrentLesson(KPI.getWeek());
         if (lesson == null) {
             Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Всё закончилось");
-        } else if (lesson.timeToStart() > KPI.getCurrentTimeInSecond()) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До начала осталось: " + toTimeFormat(lesson.timeToStart() - KPI.getCurrentTimeInSecond()));
-        } else if (lesson.timeToEnd() > KPI.getCurrentTimeInSecond()) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До конца осталось: " + toTimeFormat(lesson.timeToEnd() - KPI.getCurrentTimeInSecond()));
+        } else if (lesson.timeToStart() > KPI.getTimeInSecond()) {
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До начала осталось: " + toTimeFormat(lesson.timeToStart() - KPI.getTimeInSecond()));
+        } else if (lesson.timeToEnd() > KPI.getTimeInSecond()) {
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До конца осталось: " + toTimeFormat(lesson.timeToEnd() - KPI.getTimeInSecond()));
         }
     }
 

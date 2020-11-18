@@ -38,7 +38,7 @@ public class BotSetup extends TelegramLongPollingBot {
                     return;
 
                 List<Integer> secondList = new ArrayList<>(lessons.size());
-                final int time = KPI.getCurrentTimeInSecond();
+                final int time = KPI.getTimeInSecond();
 
                 for (Lesson lesson : lessons) {
                     secondList.add((lesson.timeToStart() - time) / 60);
