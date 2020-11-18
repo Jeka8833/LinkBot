@@ -19,6 +19,12 @@ public class Main {
         KPI.init();
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(new BotSetup(getParam(args, "-name"), getParam(args, "-token")));
+        System.out.println("All user which enable notification:");
+        for (User user : MySQL.users) {
+            if (user.notification == 0)
+                continue;
+            System.out.println(user.chatId + " - " + user.notification);
+        }
     }
 
     private static String getParam(final String[] args, final String key) {
