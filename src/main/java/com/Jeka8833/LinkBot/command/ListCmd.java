@@ -29,7 +29,7 @@ public class ListCmd implements Command {
                 sb.append("(Текущая)");
             sb.append("_\n");
             for (int day = 1; day <= 6; day++) {
-                List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day);
+                List<Lesson> dayLesson = KPI.getDayLessons  (week - 1, day);
                 if (dayLesson.isEmpty())
                     continue;
                 sb.append(dayName[day - 1]).append('\n');

@@ -10,7 +10,7 @@ import java.util.*;
 
 public class BotSetup extends TelegramLongPollingBot {
 
-    private final Map<Long, Long> throttle = new HashMap<>();
+    //private final Map<Long, Long> throttle = new HashMap<>();
     private final Map<String, Command> commandMap = new HashMap<>();
 
     final String name;
@@ -27,6 +27,7 @@ public class BotSetup extends TelegramLongPollingBot {
         commandMap.put("/help", new Help(this));
         commandMap.put("/notification", new Notification(this));
         commandMap.put("/start", new Start(this));
+        commandMap.put("/say", new Say(this));
 
         final TelegramLongPollingBot pollingBot = this;
 
@@ -80,7 +81,7 @@ public class BotSetup extends TelegramLongPollingBot {
             final long chatId = update.getMessage().getChatId();
             final String messageText = update.getMessage().getText();
             System.out.println(update.getMessage().getFrom().getFirstName() + " " + chatId + " -> " + messageText);
-
+/*
             if (throttle.containsKey(chatId)) {
                 if (throttle.get(chatId) + 1000 > System.currentTimeMillis()) {
                     Util.sendMessage(this, chatId + "", "Не спамь скотиняка");
@@ -89,7 +90,7 @@ public class BotSetup extends TelegramLongPollingBot {
                     throttle.remove(chatId);
                 }
             }
-            throttle.put(chatId, System.currentTimeMillis());
+            throttle.put(chatId, System.currentTimeMillis());*/
             final String[] arg = messageText.split(" ", 2);
             if (commandMap.containsKey(arg[0].toLowerCase()))
                 commandMap.get(arg[0].toLowerCase()).receiveListener(update, arg.length > 1 ? arg[1] : "");

@@ -38,4 +38,12 @@ public class Util {
         }
     }
 
+    public static boolean isAdmin(final long userId) {
+        for (User user : MySQL.users) {
+            if (user.chatId == userId && user.isAdmin == 1)
+                return true;
+        }
+        return false;
+    }
+
 }

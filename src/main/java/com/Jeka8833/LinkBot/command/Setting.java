@@ -18,7 +18,7 @@ public class Setting implements Command {
     @Override
     public void receiveListener(Update update, String text) {
         if (!MySQL.users.isEmpty()) {
-            if (!isAdmin(update.getMessage().getChatId())) {
+            if (!Util.isAdmin(update.getMessage().getChatId())) {
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты не админ");
                 return;
             }
@@ -62,13 +62,5 @@ public class Setting implements Command {
             default:
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Тебе здесь не рады");
         }
-    }
-
-    private static boolean isAdmin(final long userId) {
-        for (User user : MySQL.users) {
-            if (user.chatId == userId && user.isAdmin == 1)
-                return true;
-        }
-        return false;
     }
 }
