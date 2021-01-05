@@ -28,7 +28,16 @@ public class Setting implements Command {
             case "weekshift":
                 try {
                     MySQL.shiftWeek = Integer.parseInt(args[1]);
-                    MySQL.write();
+                    MySQL.write(MySQL.Table.SETTING);
+                    Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Удачно");
+                } catch (Exception ex) {
+                    Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Произошла ошибка");
+                }
+                break;
+            case "onnotification":
+                try {
+                    MySQL.onNotification = Integer.parseInt(args[1]);
+                    MySQL.write(MySQL.Table.SETTING);
                     Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Удачно");
                 } catch (Exception ex) {
                     Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Произошла ошибка");
@@ -37,7 +46,7 @@ public class Setting implements Command {
             case "addlink":
                 try {
                     MySQL.urls.put(Integer.parseInt(args[1]), args[2]);
-                    MySQL.write();
+                    MySQL.write(MySQL.Table.LINK);
                     Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Удачно");
                 } catch (Exception ex) {
                     Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Произошла ошибка");
@@ -53,14 +62,12 @@ public class Setting implements Command {
                     Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Произошла ошибка");
                 }
                 break;
-            case "help":
+            default:
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Команды:" +
                         "\n- weekShift [int]" +
+                        "\n- onnotification [int]" +
                         "\n- addLink [int(Key)] [String(link)]" +
                         "\n- reload");
-                break;
-            default:
-                Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Тебе здесь не рады");
         }
     }
 }

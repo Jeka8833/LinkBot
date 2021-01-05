@@ -9,6 +9,7 @@ import java.util.Map;
 public class MySQL {
 
     public static Integer shiftWeek = 0;
+    public static Integer onNotification = 0;
     public static final Map<Integer, String> urls = new HashMap<>();
     public static final List<User> users = new ArrayList<>();
 
@@ -50,9 +51,16 @@ public class MySQL {
     public static void read() {
         checkConnection();
         try {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + bdName + ".setting WHERE idsetting = 0;");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + bdName + ".setting");
             while (resultSet.next()) {
-                shiftWeek = resultSet.getInt(3);
+                switch (resultSet.getInt(1)) {
+                    case 0:
+                        shiftWeek = resultSet.getInt(3);
+                        break;
+                    case 1:
+                        onNotification = resultSet.getInt(3);
+                        break;
+                }
             }
             resultSet.close();
         } catch (Exception ex) {
@@ -80,25 +88,40 @@ public class MySQL {
     }
 
     public static void write() {
+        write(Table.LINK);
+        write(Table.SETTING);
+        write(Table.NOTIFICATION);
+    }
+
+    public static void write(final Table table) {
         checkConnection();
-        try {
-            statement.executeUpdate("REPLACE INTO " + bdName + ".setting(idsetting, parametr, value) VALUES(0,'weekShift', " + shiftWeek + ");");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        for (Map.Entry<Integer, String> entry : urls.entrySet()) {
-            try {
-                statement.executeUpdate("REPLACE INTO " + bdName + ".link(lessonId, linkcol) VALUES(" + entry.getKey() + ", '" + entry.getValue() + "');");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        for (User user : users) {
-            try {
-                statement.executeUpdate("REPLACE INTO " + bdName + ".notification(user_id, notification, isAdmin) VALUES(" + user.chatId + ", " + user.notification + ", " + user.isAdmin + ");");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        switch (table) {
+            case SETTING:
+                try {
+                    statement.executeUpdate("REPLACE INTO " + bdName + ".setting(idsetting, parametr, value) VALUES(0,'weekShift', " + shiftWeek + ");");
+                    statement.executeUpdate("REPLACE INTO " + bdName + ".setting(idsetting, parametr, value) VALUES(1,'notification', " + onNotification + ");");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case LINK:
+                for (Map.Entry<Integer, String> entry : urls.entrySet()) {
+                    try {
+                        statement.executeUpdate("REPLACE INTO " + bdName + ".link(lessonId, linkcol) VALUES(" + entry.getKey() + ", '" + entry.getValue() + "');");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                break;
+            case NOTIFICATION:
+                for (User user : users) {
+                    try {
+                        statement.executeUpdate("REPLACE INTO " + bdName + ".notification(user_id, notification, isAdmin) VALUES(" + user.chatId + ", " + user.notification + ", " + user.isAdmin + ");");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                break;
         }
     }
 
@@ -107,5 +130,11 @@ public class MySQL {
             statement.close();
         if (connection != null)
             connection.close();
+    }
+
+    public enum Table {
+        LINK,
+        NOTIFICATION,
+        SETTING
     }
 }

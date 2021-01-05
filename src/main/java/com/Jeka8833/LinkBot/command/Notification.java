@@ -25,7 +25,7 @@ public class Notification implements Command {
                         } else {
                             user.notification = Byte.parseByte(text);
                         }
-                        MySQL.write();
+                        MySQL.write(MySQL.Table.NOTIFICATION);
                         Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Удачно");
                         return;
                     }
