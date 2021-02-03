@@ -4,12 +4,11 @@ import com.Jeka8833.LinkBot.MySQL;
 import com.Jeka8833.LinkBot.Util;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 public class KPI {
+
+    private static final boolean localBD = true;
 
     public List<Lesson> data;
 
@@ -20,7 +19,10 @@ public class KPI {
     public static List<Lesson> lessons;
 
     public static void init() {
-        lessons = gson.fromJson(Util.readSite(url), KPI.class).data;
+        if (localBD)
+            lessons = Arrays.asList(gson.fromJson(SavedBD.data, Lesson[].class));
+        else
+            lessons = gson.fromJson(Util.readSite(url), KPI.class).data;
     }
 
     public static int getTimeInSecond() {
@@ -37,7 +39,7 @@ public class KPI {
         return (calendar.get(Calendar.WEEK_OF_YEAR) + MySQL.shiftWeek) % 2;
     }
 
-    public static int getDay(){
+    public static int getDay() {
         return calendar.get(Calendar.DAY_OF_WEEK) - 1;
     }
 
