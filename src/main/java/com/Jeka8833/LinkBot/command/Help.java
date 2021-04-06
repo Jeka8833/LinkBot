@@ -20,6 +20,7 @@ public class Help implements Command{
                 "\n/now - показывает текущую пару" +
                 "\n/list - расписание со ссылками" +
                 "\n/start - клавиатура" +
-                "\n/notification - уведомление до начала пары");
+                "\n/notification - уведомление до начала пары" +
+                "\n/table - живое время");
     }
 }

@@ -27,6 +27,7 @@ public class BotSetup extends TelegramLongPollingBot {
         commandMap.put("/notification", new Notification(this));
         commandMap.put("/start", new Start(this));
         commandMap.put("/say", new Say(this));
+        commandMap.put("/table", new Table(this));
 
         final TelegramLongPollingBot pollingBot = this;
 

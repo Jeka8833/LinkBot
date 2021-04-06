@@ -46,4 +46,10 @@ public class Util {
         return false;
     }
 
+    public static String toTimeFormat(final int second) {
+        int hours = second / 3600;
+        int mins = second / 60 % 60;
+        int secs = second % 60;
+        return (hours < 10 ? "0" : "") + hours + ":" + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
+    }
 }

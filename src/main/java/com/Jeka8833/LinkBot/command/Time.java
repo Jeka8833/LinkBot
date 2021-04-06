@@ -20,16 +20,9 @@ public class Time implements Command {
         if (lesson == null) {
             Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Всё закончилось");
         } else if (lesson.timeToStart() > KPI.getTimeInSecond()) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До начала осталось: " + toTimeFormat(lesson.timeToStart() - KPI.getTimeInSecond()));
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До начала осталось: " + Util.toTimeFormat(lesson.timeToStart() - KPI.getTimeInSecond()));
         } else if (lesson.timeToEnd() > KPI.getTimeInSecond()) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До конца осталось: " + toTimeFormat(lesson.timeToEnd() - KPI.getTimeInSecond()));
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "До конца осталось: " + Util.toTimeFormat(lesson.timeToEnd() - KPI.getTimeInSecond()));
         }
-    }
-
-    private static String toTimeFormat(final int second) {
-        int hours = second / 3600;
-        int mins = second / 60 % 60;
-        int secs = second % 60;
-        return (hours < 10 ? "0" : "") + hours + ":" + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
     }
 }
