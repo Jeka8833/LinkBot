@@ -10,6 +10,8 @@ import java.util.*;
 
 public class BotSetup extends TelegramLongPollingBot {
 
+    private Table table;
+
     private final Map<String, Command> commandMap = new HashMap<>();
 
     final String name;
@@ -27,7 +29,7 @@ public class BotSetup extends TelegramLongPollingBot {
         commandMap.put("/notification", new Notification(this));
         commandMap.put("/start", new Start(this));
         commandMap.put("/say", new Say(this));
-        commandMap.put("/table", new Table(this));
+        commandMap.put("/table", table = new Table(this));
 
         final TelegramLongPollingBot pollingBot = this;
 
@@ -58,6 +60,7 @@ public class BotSetup extends TelegramLongPollingBot {
                                         "\nТип: " + lesson.lesson_type +
                                         "\nПреподаватель: " + lesson.teacher_name +
                                         "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-"));
+                                table.send(user.chatId + "");
                                 break;
                             }
                         }
