@@ -73,7 +73,7 @@ public class Table implements Command {
 
     private static String messageGenerate(final List<Lesson> lessons) {
         final StringBuilder sb = new StringBuilder();
-        sb.append("Рассписание на ").append(dayName[KPI.getDay()]).append('\n');
+        sb.append("Рассписание на ").append(dayName[KPI.getDay() - 1]).append('\n');
         for (Lesson lesson : lessons) {
             sb.append(lesson.lesson_number).append(") ").append(lesson.lesson_name, 0, Math.min(45, lesson.lesson_name.length())).append(" `")
                     .append(lesson.lesson_type).append('`').append('\n');

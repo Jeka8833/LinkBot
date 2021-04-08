@@ -10,7 +10,7 @@ import java.util.*;
 
 public class BotSetup extends TelegramLongPollingBot {
 
-    private Table table;
+    private final Table table;
 
     private final Map<String, Command> commandMap = new HashMap<>();
 
