@@ -1,7 +1,6 @@
 package com.Jeka8833.LinkBot.command;
 
 import com.Jeka8833.LinkBot.MySQL;
-import com.Jeka8833.LinkBot.User;
 import com.Jeka8833.LinkBot.Util;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -18,7 +17,7 @@ public class Setting implements Command {
     @Override
     public void receiveListener(Update update, String text) {
         if (!MySQL.users.isEmpty()) {
-            if (!Util.isAdmin(update.getMessage().getChatId())) {
+            if (Util.isUser(update.getMessage().getChatId())) {
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты не админ");
                 return;
             }

@@ -26,7 +26,7 @@ public class Util {
         throw new NullPointerException("Fail connect or read site -> " + url);
     }
 
-    public static void sendMessage(final TelegramLongPollingBot bot, final String chatId, final String text){
+    public static void sendMessage(final TelegramLongPollingBot bot, final String chatId, final String text) {
         final SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.enableMarkdown(true);
@@ -34,16 +34,16 @@ public class Util {
         try {
             bot.execute(message);
         } catch (TelegramApiException e) {
+            System.out.println("User error: " + chatId);
             e.printStackTrace();
         }
     }
 
-    public static boolean isAdmin(final long userId) {
-        for (User user : MySQL.users) {
+    public static boolean isUser(final long userId) {
+        for (User user : MySQL.users)
             if (user.chatId == userId && user.isAdmin == 1)
-                return true;
-        }
-        return false;
+                return false;
+        return true;
     }
 
     public static String toTimeFormat(final int second) {
@@ -51,5 +51,13 @@ public class Util {
         int mins = second / 60 % 60;
         int secs = second % 60;
         return (hours < 10 ? "0" : "") + hours + ":" + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
+    }
+
+
+    public static String getParam(final String[] args, final String key) {
+        for (int i = 0; i < args.length - 1; i++)
+            if (args[i].equalsIgnoreCase(key))
+                return args[i + 1];
+        return System.getenv(key.substring(1).toUpperCase());
     }
 }
