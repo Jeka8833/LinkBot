@@ -14,7 +14,7 @@ public class Time implements Command {
 
     @Override
     public void receiveListener(final Update update, final String text) {
-        Util.sendMessage(pollingBot, update.getUpdateId() + "", "Команда переехала '/table'");
+        Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Команда переехала '/table'");
         /*
         final Lesson lesson = KPI.getCurrentLesson(KPI.getWeek());
         if (lesson == null) {
