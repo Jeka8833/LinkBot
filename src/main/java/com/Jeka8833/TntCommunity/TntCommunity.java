@@ -22,12 +22,11 @@ public class TntCommunity implements Runnable {
     @Override
     public void run() {
         final CloseableHttpClient client = HttpClients.createDefault();
-        final HttpPost httppost = new HttpPost("http://tntclientv2.000webhostapp.com/player/updatestats.php?key=" + key);
         while (true) {
             try {
                 final int minute = (int) ((System.currentTimeMillis() / (1000 * 60)) % 60);
                 if (minute == 0 || minute == 30)
-                    client.execute(httppost);
+                    client.execute(new HttpPost("http://tntclientv2.000webhostapp.com/player/updatestats.php?key=" + key));
                 Thread.sleep(60 * 1000);
             } catch (Exception e) {
                 e.printStackTrace();
