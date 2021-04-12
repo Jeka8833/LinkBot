@@ -14,7 +14,7 @@ import java.util.*;
 public class Table implements Command {
 
     private static final Map<String, Timer> timers = new HashMap<>();
-    private static final String[] dayName = {"*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
+    private static final String[] dayName = {"*Воскресенье:*", "*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
     private final TelegramLongPollingBot pollingBot;
 
     public Table(TelegramLongPollingBot pollingBot) {
@@ -72,8 +72,10 @@ public class Table implements Command {
     }
 
     private static String messageGenerate(final List<Lesson> lessons) {
+        if(lessons == null || lessons.isEmpty())
+            return "Сегодня пар нет";
         final StringBuilder sb = new StringBuilder();
-        sb.append("Рассписание на ").append(dayName[KPI.getDay() - 1]).append('\n');
+        sb.append("Рассписание на ").append(dayName[KPI.getDay()]).append('\n');
         for (Lesson lesson : lessons) {
             sb.append(lesson.lesson_number).append(") ").append(lesson.lesson_name, 0, Math.min(45, lesson.lesson_name.length())).append(" `")
                     .append(lesson.lesson_type).append('`').append('\n');
