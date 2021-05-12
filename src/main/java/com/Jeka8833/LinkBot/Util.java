@@ -12,18 +12,26 @@ import java.net.URL;
 public class Util {
 
     public static String readSite(final String url) {
-        try (final InputStream inputStream = new URL(url).openStream();
-             final ByteArrayOutputStream result = new ByteArrayOutputStream()) {
+        try {
+            return readInputStream(new URL(url).openStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("Fail connect or read site -> " + url);
+    }
+
+    public static String readInputStream(final InputStream inputStream) {
+        try (final ByteArrayOutputStream result = new ByteArrayOutputStream()) {
             final byte[] buffer = new byte[1024];
             int length;
-            while ((length = inputStream.read(buffer)) != -1) {
+            while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
                 result.write(buffer, 0, length);
             }
             return result.toString("UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        throw new NullPointerException("Fail connect or read site -> " + url);
+        throw new NullPointerException("Fail read InputStream");
     }
 
     public static void sendMessage(final TelegramLongPollingBot bot, final String chatId, final String text) {
