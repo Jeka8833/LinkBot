@@ -37,7 +37,7 @@ public class TntCommunity implements Runnable {
                 if (minute == 0 || minute == 30) {
                     String res = "{\"key\":\"" + keyApi + "\"}";
                     while (!res.equals("")) {
-                        res = updateSite("\"http://tntclientv2.000webhostapp.com/player/updatestats.php", res, client);
+                        res = updateSite("http://tntclientv2.000webhostapp.com/player/updatestats.php", res, client);
                     }
 
                     res = "{\"key\":\"" + keyVisual + "\"}";
