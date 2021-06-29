@@ -8,7 +8,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 public class TntCommunity implements Runnable {
 
@@ -33,24 +35,14 @@ public class TntCommunity implements Runnable {
             try {
                 final int minute = (int) ((System.currentTimeMillis() / (1000 * 60)) % 60);
                 if (minute == 0 || minute == 30) {
-                    client.execute(new HttpPost("http://tntclientv2.000webhostapp.com/player/updatestats.php?key=" + keyApi));
-
-                    String res = "{\"key\":\"" + keyVisual + "\"}";
+                    String res = "{\"key\":\"" + keyApi + "\"}";
                     while (!res.equals("")) {
-                        HttpPost httppost = new HttpPost("https://tntstats.000webhostapp.com/update.php");
+                        res = updateSite("\"http://tntclientv2.000webhostapp.com/player/updatestats.php", res, client);
+                    }
 
-                        StringEntity params = new StringEntity(res);
-                        httppost.addHeader("content-type", "application/x-www-form-urlencoded");
-                        httppost.setEntity(params);
-
-                        HttpResponse response = client.execute(httppost);
-                        HttpEntity entity = response.getEntity();
-
-                        if (entity != null) {
-                            try (InputStream instream = entity.getContent()) {
-                                res = Util.readInputStream(instream);
-                            }
-                        }
+                    res = "{\"key\":\"" + keyVisual + "\"}";
+                    while (!res.equals("")) {
+                        res = updateSite("https://tntstats.000webhostapp.com/update.php", res, client);
                     }
                 }
                 Thread.sleep(60 * 1000);
@@ -58,5 +50,23 @@ public class TntCommunity implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static String updateSite(final String url, final String json, final CloseableHttpClient client) throws IOException {
+        HttpPost httppost = new HttpPost(url);
+
+        StringEntity params = new StringEntity(json);
+        httppost.addHeader("content-type", "application/x-www-form-urlencoded");
+        httppost.setEntity(params);
+
+        HttpResponse response = client.execute(httppost);
+        HttpEntity entity = response.getEntity();
+
+        if (entity != null) {
+            try (InputStream instream = entity.getContent()) {
+                return Util.readInputStream(instream);
+            }
+        }
+        return "";
     }
 }
