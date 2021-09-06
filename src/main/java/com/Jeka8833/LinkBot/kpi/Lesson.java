@@ -1,5 +1,7 @@
 package com.Jeka8833.LinkBot.kpi;
 
+import com.Jeka8833.LinkBot.Util;
+
 public class Lesson implements Comparable<Lesson> {
 
     public int lesson_id;
@@ -11,15 +13,16 @@ public class Lesson implements Comparable<Lesson> {
     public int lesson_week;
     public String time_start;
     public String time_end;
+    public String lesson_class;
+    public boolean online;
+    public boolean choice;
 
     public int timeToStart() {
-        final String[] arg = time_start.split(":");
-        return Integer.parseInt(arg[0]) * 60 * 60 + Integer.parseInt(arg[1]) * 60 + Integer.parseInt(arg[2]);
+        return Util.parseTime(time_start);
     }
 
     public int timeToEnd() {
-        final String[] arg = time_end.split(":");
-        return Integer.parseInt(arg[0]) * 60 * 60 + Integer.parseInt(arg[1]) * 60 + Integer.parseInt(arg[2]);
+        return Util.parseTime(time_end);
     }
 
     @Override

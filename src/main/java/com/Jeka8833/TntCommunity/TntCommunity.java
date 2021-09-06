@@ -10,7 +10,6 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
 public class TntCommunity implements Runnable {
 

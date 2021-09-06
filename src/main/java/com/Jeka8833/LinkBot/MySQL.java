@@ -79,7 +79,7 @@ public class MySQL {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + bdName + ".notification;");
             users.clear();
             while (resultSet.next()) {
-                users.add(new User(resultSet.getLong(1), resultSet.getByte(2), resultSet.getByte(3)));
+                users.add(new User(resultSet.getLong(1), resultSet.getByte(2), resultSet.getByte(3), resultSet.getString(4)));
             }
             resultSet.close();
         } catch (Exception ex) {
@@ -116,7 +116,7 @@ public class MySQL {
             case NOTIFICATION:
                 for (User user : users) {
                     try {
-                        statement.executeUpdate("REPLACE INTO " + bdName + ".notification(user_id, notification, isAdmin) VALUES(" + user.chatId + ", " + user.notification + ", " + user.isAdmin + ");");
+                        statement.executeUpdate("REPLACE INTO " + bdName + ".notification(user_id, notification, isAdmin, skipLesson) VALUES(" + user.chatId + ", " + user.notification + ", " + user.isAdmin + ", '" + user.skipLesson + "');");
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

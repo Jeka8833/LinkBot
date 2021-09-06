@@ -1,5 +1,6 @@
 package com.Jeka8833.LinkBot.command;
 
+import com.Jeka8833.LinkBot.User;
 import com.Jeka8833.LinkBot.Util;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
@@ -31,15 +32,20 @@ public class Table implements Command {
             timers.get(chatId).cancel();
 
         try {
-            final List<Lesson> lessons = KPI.getDayLessons(KPI.getWeek());
-            if (lessons == null) {
+            final List<Lesson> lessons = KPI.getDayLessons();
+            if (lessons.isEmpty()) {
                 Util.sendMessage(pollingBot, chatId, "Сегодня пар нет");
+                return;
+            }
+            final User user = Util.getUser(Long.parseLong(chatId));
+            if (user == null) {
+                Util.sendMessage(pollingBot, chatId, "Ты кто? Напиши '/start', а уже потом '/table'");
                 return;
             }
             final SendMessage message = new SendMessage();
             message.setChatId(chatId);
             message.enableMarkdown(true);
-            message.setText(messageGenerate(lessons));
+            message.setText(messageGenerate(lessons, user));
             final int messageIndex = pollingBot.execute(message).getMessageId();
 
             final long time = System.currentTimeMillis();
@@ -54,7 +60,7 @@ public class Table implements Command {
                         editMessageText.setChatId(chatId);
                         editMessageText.setMessageId(messageIndex);
                         editMessageText.enableMarkdown(true);
-                        editMessageText.setText(messageGenerate(lessons));
+                        editMessageText.setText(messageGenerate(lessons, user));
                         pollingBot.execute(editMessageText);
                     } catch (TelegramApiException | NullPointerException ignored) {
 
@@ -64,19 +70,21 @@ public class Table implements Command {
                         e.printStackTrace();
                     }
                 }
-            }, 0, 1000);
+            }, 0, 2000);
             timers.put(chatId, timer);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private static String messageGenerate(final List<Lesson> lessons) {
-        if(lessons == null || lessons.isEmpty())
+    private static String messageGenerate(final List<Lesson> lessons, final User user) {
+        if (lessons == null || lessons.isEmpty())
             return "Сегодня пар нет";
         final StringBuilder sb = new StringBuilder();
         sb.append("Рассписание на ").append(dayName[KPI.getDay()]).append('\n');
         for (Lesson lesson : lessons) {
+            if (user.isSkipLesson(lesson.lesson_id))
+                continue;
             sb.append(lesson.lesson_number).append(") ").append(lesson.lesson_name, 0, Math.min(45, lesson.lesson_name.length())).append(" `")
                     .append(lesson.lesson_type).append('`').append('\n');
             sb.append("-> Время: ");
@@ -84,7 +92,7 @@ public class Table implements Command {
                 sb.append("Пара уже прошла");
             } else {
                 sb.append(lesson.timeToStart() > KPI.getTimeInSecond() ?
-                        Util.toTimeFormat(lesson.timeToStart() - KPI.getTimeInSecond()) : "Now").append(" - ")
+                                Util.toTimeFormat(lesson.timeToStart() - KPI.getTimeInSecond()) : "Now").append(" - ")
                         .append(Util.toTimeFormat(lesson.timeToEnd() - KPI.getTimeInSecond()));
             }
             sb.append('\n');

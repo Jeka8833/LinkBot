@@ -50,7 +50,7 @@ public class Start implements Command {
             if (user.chatId.equals(update.getMessage().getChatId()))
                 return;
         }
-        MySQL.users.add(new User(update.getMessage().getChatId(), (byte) 0, (byte) 0));
+        MySQL.users.add(new User(update.getMessage().getChatId(), (byte) 0, (byte) 0, ""));
         MySQL.write();
     }
 }

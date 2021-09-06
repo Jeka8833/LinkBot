@@ -20,7 +20,6 @@ public class BotSetup extends TelegramLongPollingBot {
     public BotSetup(String name, String token) {
         this.name = name;
         this.token = token;
-        commandMap.put("/time", new Time(this));
         commandMap.put("/setting", new Setting(this));
         commandMap.put("/now", new Now(this));
         commandMap.put("/next", new Next(this));
@@ -30,6 +29,7 @@ public class BotSetup extends TelegramLongPollingBot {
         commandMap.put("/start", new Start(this));
         commandMap.put("/say", new Say(this));
         commandMap.put("/table", table = new Table(this));
+        commandMap.put("/hide", new Hide(this));
 
         final TelegramLongPollingBot pollingBot = this;
 
@@ -37,8 +37,8 @@ public class BotSetup extends TelegramLongPollingBot {
             @Override
             public void run() {
                 if (MySQL.onNotification != 0) {
-                    final List<Lesson> lessons = KPI.getDayLessons(KPI.getWeek());
-                    if (lessons == null)
+                    final List<Lesson> lessons = KPI.getDayLessons();
+                    if (lessons.isEmpty())
                         return;
 
                     List<Integer> secondList = new ArrayList<>(lessons.size());
@@ -51,19 +51,24 @@ public class BotSetup extends TelegramLongPollingBot {
                     for (User user : MySQL.users) {
                         if (user.notification == 0)
                             continue;
+                        boolean send = false;
                         for (int i = 0; i < secondList.size(); i++) {
                             if (user.notification == secondList.get(i)) {
                                 final Lesson lesson = lessons.get(i);
+                                if (user.isSkipLesson(lesson.lesson_id))
+                                    continue;
                                 Util.sendMessage(pollingBot, user.chatId + "", "Скоро будет пара:" +
                                         "\nПара: " + lesson.lesson_number + "(" + lesson.time_start + " - " + lesson.time_end + ")" +
                                         "\nНазвание: " + lesson.lesson_name +
-                                        "\nТип: " + lesson.lesson_type +
+                                        "\nТип: " + lesson.lesson_type + (lesson.online ? " Онлайн" : "") + (lesson.choice ? " Факультатив" : "") +
                                         "\nПреподаватель: " + lesson.teacher_name +
-                                        "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-"));
-                                table.send(user.chatId + "");
-                                break;
+                                        (lesson.online ? "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-")
+                                                : "\nАудитория: " + lesson.lesson_class));
+                                send = true;
                             }
                         }
+                        if (send)
+                            table.send(user.chatId + "");
                     }
                 }
             }

@@ -29,7 +29,7 @@ public class ListCmd implements Command {
                 sb.append("(Текущая)");
             sb.append("_\n");
             for (int day = 1; day <= 6; day++) {
-                List<Lesson> dayLesson = KPI.getDayLessons  (week - 1, day);
+                List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day);
                 if (dayLesson.isEmpty())
                     continue;
                 sb.append(dayName[day - 1]).append('\n');
@@ -39,7 +39,10 @@ public class ListCmd implements Command {
                         sb.append(" -> ").append(lesson.lesson_id);
                     }
                     sb.append('\n');
-                    sb.append("    > ").append(MySQL.urls.getOrDefault(lesson.lesson_id, "-")).append("\n");
+                    if (lesson.online)
+                        sb.append("    > ").append(MySQL.urls.getOrDefault(lesson.lesson_id, "-")).append("\n");
+                    else
+                        sb.append("    > ").append("Аудитория: ").append(lesson.lesson_class).append("\n");
                 }
                 sb.append('\n');
             }
