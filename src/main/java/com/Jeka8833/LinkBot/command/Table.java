@@ -70,7 +70,7 @@ public class Table implements Command {
                         e.printStackTrace();
                     }
                 }
-            }, 0, 2000);
+            }, 0, 3000);
             timers.put(chatId, timer);
         } catch (Exception ex) {
             ex.printStackTrace();
