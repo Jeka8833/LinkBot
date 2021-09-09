@@ -12,13 +12,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
 
-public class Table implements Command {
+public class Time implements Command {
 
     private static final Map<String, Timer> timers = new HashMap<>();
     private static final String[] dayName = {"*Воскресенье:*", "*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
     private final TelegramLongPollingBot pollingBot;
 
-    public Table(TelegramLongPollingBot pollingBot) {
+    public Time(TelegramLongPollingBot pollingBot) {
         this.pollingBot = pollingBot;
     }
 
@@ -39,7 +39,7 @@ public class Table implements Command {
             }
             final User user = Util.getUser(Long.parseLong(chatId));
             if (user == null) {
-                Util.sendMessage(pollingBot, chatId, "Ты кто? Напиши '/start', а уже потом '/table'");
+                Util.sendMessage(pollingBot, chatId, "Ты кто? Напиши '/start', а уже потом '/time'");
                 return;
             }
             final SendMessage message = new SendMessage();
