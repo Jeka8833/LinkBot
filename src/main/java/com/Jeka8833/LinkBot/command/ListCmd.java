@@ -11,8 +11,6 @@ import java.util.List;
 
 public class ListCmd implements Command {
 
-    private static final String[] dayName = {"*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
-
     private final TelegramLongPollingBot pollingBot;
 
     public ListCmd(TelegramLongPollingBot pollingBot) {
@@ -32,7 +30,7 @@ public class ListCmd implements Command {
                 List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day);
                 if (dayLesson.isEmpty())
                     continue;
-                sb.append(dayName[day - 1]).append('\n');
+                sb.append(Util.getDayName(day - 1)).append('\n');
                 for (Lesson lesson : dayLesson) {
                     sb.append(lesson.lesson_number).append(") ").append(lesson.lesson_name).append(" `").append(lesson.lesson_type).append('`');
                     if (text.equalsIgnoreCase("root")) {

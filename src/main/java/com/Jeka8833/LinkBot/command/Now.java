@@ -23,22 +23,35 @@ public class Now implements Command {
     public void receiveListener(Update update, String text) {
         final User user = Util.getUser(update.getMessage().getChatId());
         if (user == null) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты кто? Напиши '/start', а уже потом '/now'");
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "",
+                    "Ты кто? Напиши '/start', а уже потом '/now'");
             return;
         }
-        final List<Lesson> lessonList = KPI.getCurrentLessons().stream().filter(lesson -> !user.isSkipLesson(lesson.lesson_id)).collect(Collectors.toList());
-        if (lessonList.isEmpty()) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Уже ничего не будет");
+        final List<Lesson> lessons = KPI.getDayLessons().stream().filter(lesson -> !user.isSkipLesson(lesson.lesson_id))
+                .collect(Collectors.toList());
+        if (lessons.isEmpty()) {
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "",
+                    "Сегодня пор не будет, если хочешь узнать пару на следующий день, напиши /now");
         } else {
-            for (Lesson lesson : lessonList){
-                Util.sendMessage(pollingBot, user.chatId + "", "Скоро будет пара:" +
-                        "\nПара: " + lesson.lesson_number + "(" + lesson.time_start + " - " + lesson.time_end + ")" +
-                        "\nНазвание: " + lesson.lesson_name +
-                        "\nТип: " + lesson.lesson_type + (lesson.online ? " Онлайн" : "") + (lesson.choice ? " Факультатив" : "") +
-                        "\nПреподаватель: " + lesson.teacher_name +
-                        (lesson.online ? "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-")
-                                : "\nАудитория: " + lesson.lesson_class));
+            StringBuilder sb = new StringBuilder("Расписание на " + Util.getDayName(KPI.getDay()) + "\n");
+            for (Lesson lesson : lessons) {
+                final boolean isEnd = lesson.timeToEnd() < KPI.getTimeInSecond();
+                if (isEnd)
+                    sb.append("~~");
+                sb.append("\uD83D\uDD39 Пара: ").append(lesson.lesson_number).append("(").append(lesson.time_start).append(" - ")
+                        .append(lesson.time_end).append(")");
+                if (isEnd)
+                    sb.append("~~");
+                sb.append("\nНазвание: ").append(lesson.lesson_name)
+                        .append("\nТип: ").append(lesson.lesson_type)
+                        .append(lesson.online ? " Онлайн" : "")
+                        .append(lesson.choice ? " Факультатив" : "")
+                        .append("\nПреподаватель: ").append(lesson.teacher_name)
+                        .append(lesson.online ? "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-")
+                                : "\nАудитория: " + lesson.lesson_class).append("\n\n");
+
             }
+            Util.sendMessage(pollingBot, user.chatId + "", sb.toString());
         }
     }
 }

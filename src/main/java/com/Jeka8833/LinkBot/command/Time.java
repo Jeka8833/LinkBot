@@ -15,7 +15,6 @@ import java.util.*;
 public class Time implements Command {
 
     private static final Map<String, Timer> timers = new HashMap<>();
-    private static final String[] dayName = {"*Воскресенье:*", "*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
     private final TelegramLongPollingBot pollingBot;
 
     public Time(TelegramLongPollingBot pollingBot) {
@@ -81,7 +80,7 @@ public class Time implements Command {
         if (lessons == null || lessons.isEmpty())
             return "Сегодня пар нет";
         final StringBuilder sb = new StringBuilder();
-        sb.append("Рассписание на ").append(dayName[KPI.getDay()]).append('\n');
+        sb.append("Рассписание на ").append(Util.getDayName(KPI.getDay())).append('\n');
         for (Lesson lesson : lessons) {
             if (user.isSkipLesson(lesson.lesson_id))
                 continue;

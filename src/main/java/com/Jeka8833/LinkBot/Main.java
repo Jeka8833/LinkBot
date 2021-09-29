@@ -13,7 +13,8 @@ public class Main {
     public static void main(String[] args) throws TelegramApiException {
         TntCommunity.main(args);
         try {
-            MySQL.connect(Util.getParam(args, "-host"), Util.getParam(args, "-user"), Util.getParam(args, "-pass"), Util.getParam(args, "-bdname"));
+            MySQL.connect(Util.getParam(args, "-host"), Util.getParam(args, "-user"),
+                    Util.getParam(args, "-pass"), Util.getParam(args, "-bdname"));
         } catch (SQLException e) {
             e.printStackTrace();
         }

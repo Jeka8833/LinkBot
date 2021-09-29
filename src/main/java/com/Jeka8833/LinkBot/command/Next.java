@@ -8,6 +8,7 @@ import com.Jeka8833.LinkBot.kpi.Lesson;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,20 +27,41 @@ public class Next implements Command {
             Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты кто? Напиши '/start', а уже потом '/now'");
             return;
         }
-        final List<Lesson> lessonList = KPI.getNextLesson().stream().filter(lesson -> !user.isSkipLesson(lesson.lesson_id)).collect(Collectors.toList());
-        if (lessonList.isEmpty()) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Уже ничего не будет");
-        } else {
-            for (Lesson lesson : lessonList) {
-                Util.sendMessage(pollingBot, user.chatId + "", "Скоро будет пара:" +
-                        "\nПара: " + lesson.lesson_number + "(" + lesson.time_start + " - " + lesson.time_end + ")" +
-                        "\nНазвание: " + lesson.lesson_name +
-                        "\nТип: " + lesson.lesson_type + (lesson.online ? " Онлайн" : "") + (lesson.choice ? " Факультатив" : "") +
-                        "\nПреподаватель: " + lesson.teacher_name +
-                        (lesson.online ? "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-")
-                                : "\nАудитория: " + lesson.lesson_class));
+        int day = KPI.getDay() + 1;
+        int week = KPI.getWeek();
+        List<Lesson> lessons = new ArrayList<>();
+        for (int i = 0; i < 13; i++) {
+            if (day > 6) {
+                week = (week + 1) % 2;
+                day = 1;
             }
+            lessons = KPI.getDayLessons(week, day++).stream()
+                    .filter(lesson -> !user.isSkipLesson(lesson.lesson_id)).collect(Collectors.toList());
+            if (!lessons.isEmpty())
+                break;
+        }
+        if (lessons.isEmpty()) {
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "А у тебя пары вообще существуют?");
+        } else {
+            StringBuilder sb = new StringBuilder("Расписание на " + Util.getDayName((day - 1)) + "\n");
+            for (Lesson lesson : lessons) {
+                final boolean isEnd = lesson.timeToEnd() < KPI.getTimeInSecond();
+                if (isEnd)
+                    sb.append("~~");
+                sb.append("\uD83D\uDD39 Пара: ").append(lesson.lesson_number).append("(").append(lesson.time_start).append(" - ")
+                        .append(lesson.time_end).append(")");
+                if (isEnd)
+                    sb.append("~~");
+                sb.append("\nНазвание: ").append(lesson.lesson_name)
+                        .append("\nТип: ").append(lesson.lesson_type)
+                        .append(lesson.online ? " Онлайн" : "")
+                        .append(lesson.choice ? " Факультатив" : "")
+                        .append("\nПреподаватель: ").append(lesson.teacher_name)
+                        .append(lesson.online ? "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-")
+                                : "\nАудитория: " + lesson.lesson_class).append("\n\n");
+
+            }
+            Util.sendMessage(pollingBot, user.chatId + "", sb.toString());
         }
     }
-
 }

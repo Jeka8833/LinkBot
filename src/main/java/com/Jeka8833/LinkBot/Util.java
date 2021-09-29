@@ -13,6 +13,8 @@ import java.io.InputStream;
 
 public class Util {
 
+    private static final String[] dayName = {"*Воскресенье:*", "*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
+
     public static String readInputStream(final @NotNull InputStream inputStream) {
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream()) {
             final byte[] buffer = new byte[1024];
@@ -98,5 +100,9 @@ public class Util {
             hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
+    }
+
+    public static String getDayName(final int day) {
+        return dayName[day];
     }
 }

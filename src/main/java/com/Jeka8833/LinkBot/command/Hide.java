@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 public class Hide implements Command {
 
-    private static final String[] dayName = {"*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
-
     private final TelegramLongPollingBot pollingBot;
 
     public Hide(TelegramLongPollingBot pollingBot) {
@@ -63,7 +61,7 @@ public class Hide implements Command {
                         List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day).stream().filter(lesson -> lesson.choice && !user.isSkipLesson(lesson.lesson_id)).collect(Collectors.toList());
                         if (dayLesson.isEmpty())
                             continue;
-                        sb.append(dayName[day - 1]).append('\n');
+                        sb.append(Util.getDayName(day - 1)).append('\n');
                         for (Lesson lesson : dayLesson) {
                             sb.append(lesson.lesson_id).append(" -> ").append(lesson.lesson_number).append(") ")
                                     .append(lesson.lesson_name).append(" `").append(lesson.lesson_type).append('`')
@@ -81,7 +79,7 @@ public class Hide implements Command {
                         List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day).stream().filter(lesson -> user.isSkipLesson(lesson.lesson_id)).collect(Collectors.toList());
                         if (dayLesson.isEmpty())
                             continue;
-                        sb.append(dayName[day - 1]).append('\n');
+                        sb.append(Util.getDayName(day - 1)).append('\n');
                         for (Lesson lesson : dayLesson) {
                             sb.append(lesson.lesson_id).append(" -> ").append(lesson.lesson_number).append(") ")
                                     .append(lesson.lesson_name).append(" `").append(lesson.lesson_type).append('`')
