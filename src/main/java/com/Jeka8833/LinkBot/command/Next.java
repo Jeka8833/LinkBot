@@ -45,14 +45,9 @@ public class Next implements Command {
         } else {
             StringBuilder sb = new StringBuilder("Расписание на " + Util.getDayName((day - 1)) + "\n");
             for (Lesson lesson : lessons) {
-                final boolean isEnd = lesson.timeToEnd() < KPI.getTimeInSecond();
-                if (isEnd)
-                    sb.append("~~");
                 sb.append("\uD83D\uDD39 Пара: ").append(lesson.lesson_number).append("(").append(lesson.time_start).append(" - ")
-                        .append(lesson.time_end).append(")");
-                if (isEnd)
-                    sb.append("~~");
-                sb.append("\nНазвание: ").append(lesson.lesson_name)
+                        .append(lesson.time_end).append(")")
+                        .append("\nНазвание: ").append(lesson.lesson_name)
                         .append("\nТип: ").append(lesson.lesson_type)
                         .append(lesson.online ? " Онлайн" : "")
                         .append(lesson.choice ? " Факультатив" : "")
