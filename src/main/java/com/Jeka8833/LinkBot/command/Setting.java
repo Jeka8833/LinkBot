@@ -62,11 +62,12 @@ public class Setting implements Command {
                 }
                 break;
             default:
-                Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Команды:" +
-                        "\n- weekShift [int]" +
-                        "\n- onnotification [int]" +
-                        "\n- addLink [int(Key)] [String(link)]" +
-                        "\n- reload");
+                Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", """
+                        Команды:
+                        - weekShift [int]
+                        - onnotification [int]
+                        - addLink [int(Key)] [String(link)]
+                        - reload""");
         }
     }
 }

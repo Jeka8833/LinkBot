@@ -53,9 +53,10 @@ public class Say implements Command {
                 }
                 break;
             default:
-                Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Команды:" +
-                        "\n- text [Text]" +
-                        "\n- lesson [int]");
+                Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", """
+                        Команды:
+                        - text [Text]
+                        - lesson [int]""");
         }
     }
 }

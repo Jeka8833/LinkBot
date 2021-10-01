@@ -1,12 +1,10 @@
 package com.Jeka8833.LinkBot.kpi;
 
 import com.Jeka8833.LinkBot.MySQL;
-import com.Jeka8833.LinkBot.Util;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class KPI {
 
@@ -39,23 +37,6 @@ public class KPI {
         return calendar.get(Calendar.DAY_OF_WEEK) - 1;
     }
 
-    public static int getCurrentLessonNumber() {
-        final long time = getTimeInSecond();
-        if (time < Util.parseTime("10:05:00"))
-            return 1;
-        if (time < Util.parseTime("12:00:00"))
-            return 2;
-        if (time < Util.parseTime("13:55:00"))
-            return 3;
-        if (time < Util.parseTime("15:50:00"))
-            return 4;
-        if (time < Util.parseTime("17:45:00"))
-            return 5;
-        if (time < Util.parseTime("20:05:00"))
-            return 6;
-        return 7;
-    }
-
     public static @NotNull List<Lesson> getDayLessons(final int week, final int day) {
         final List<Lesson> lessons = new ArrayList<>();
         for (Lesson lesson : KPI.lessons)
@@ -67,23 +48,5 @@ public class KPI {
 
     public static @NotNull List<Lesson> getDayLessons() {
         return getDayLessons(getWeek(), getDay());
-    }
-
-    public static @NotNull List<Lesson> getCurrentLessons() {
-        final int currentLessonNumber = getCurrentLessonNumber();
-        return getDayLessons().stream()
-                .filter(lesson -> lesson.lesson_number == currentLessonNumber).collect(Collectors.toList());
-    }
-
-    public static @NotNull List<Lesson> getNextLesson() {
-        final List<Lesson> dayLesson = getDayLessons();
-        for (int i = getCurrentLessonNumber() + 1; i <= 7; i++) {
-            int finalI = i;
-            final List<Lesson> out = dayLesson.stream()
-                    .filter(lesson -> lesson.lesson_number == finalI).collect(Collectors.toList());
-            if (!out.isEmpty())
-                return out;
-        }
-        return new ArrayList<>();
     }
 }

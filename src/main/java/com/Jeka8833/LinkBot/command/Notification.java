@@ -33,15 +33,17 @@ public class Notification implements Command {
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты кто? Напиши '/start', а уже потом '/notification'");
                 return;
             }
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Пример использования команды:\n" +
-                    "/notification 45 -> уведомить за 45 минут до начала пары\n" +
-                    "/notification 0 -> выключить уведомление\n" +
-                    "/notification off -> выключить уведомление");
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", """
+                    Пример использования команды:
+                    /notification 45 -> уведомить за 45 минут до начала пары
+                    /notification 0 -> выключить уведомление
+                    /notification off -> выключить уведомление""");
         } catch (Exception ex) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Пример использования команды:\n" +
-                    "/notification 45 -> увидомить за 45 минут до начала пары\n" +
-                    "/notification 0 -> выключить уведомление\n" +
-                    "/notification off -> выключить уведомление");
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", """
+                    Пример использования команды:
+                    /notification 45 -> увидомить за 45 минут до начала пары
+                    /notification 0 -> выключить уведомление
+                    /notification off -> выключить уведомление""");
         }
 
     }

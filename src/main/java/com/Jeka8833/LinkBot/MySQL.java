@@ -54,12 +54,8 @@ public class MySQL {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + bdName + ".setting");
             while (resultSet.next()) {
                 switch (resultSet.getInt(1)) {
-                    case 0:
-                        shiftWeek = resultSet.getInt(3);
-                        break;
-                    case 1:
-                        onNotification = resultSet.getInt(3);
-                        break;
+                    case 0 -> shiftWeek = resultSet.getInt(3);
+                    case 1 -> onNotification = resultSet.getInt(3);
                 }
             }
             resultSet.close();

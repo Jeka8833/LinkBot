@@ -91,11 +91,12 @@ public class Hide implements Command {
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", sb.toString());
                 break;
             default:
-                Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Комманды:" +
-                        "\n/hide list - показываеть список всех пар" +
-                        "\n/hide add - добавить в список пропусков" +
-                        "\n/hide remove - удалить из списка пропусков" +
-                        "\n/hide reset - сброс списка");
+                Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", """
+                        Комманды:
+                        /hide list - показываеть список всех пар
+                        /hide add - добавить в список пропусков
+                        /hide remove - удалить из списка пропусков
+                        /hide reset - сброс списка""");
         }
     }
 }

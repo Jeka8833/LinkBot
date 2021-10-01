@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class Util {
 
@@ -22,7 +23,7 @@ public class Util {
             while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
                 result.write(buffer, 0, length);
             }
-            return result.toString("UTF-8");
+            return result.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
