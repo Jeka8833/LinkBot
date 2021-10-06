@@ -197,7 +197,7 @@ public class SavedBD {
                 "lesson_class": "129-12",
                 "time_start": "10:25:00",
                 "time_end": "12:00:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -477,7 +477,7 @@ public class SavedBD {
                 "lesson_class": "134-12",
                 "time_start": "08:30:00",
                 "time_end": "10:05:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -491,7 +491,7 @@ public class SavedBD {
                 "lesson_class": "129-12",
                 "time_start": "10:25:00",
                 "time_end": "12:00:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {

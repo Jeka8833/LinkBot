@@ -1,13 +1,9 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.5'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
 group 'com.Jeka8833'
 version '1.0.6.2'
-sourceCompatibility = '15'
-
 compileJava.options.encoding = 'UTF-8'
 
 task stage(type: Copy) {
@@ -25,10 +21,8 @@ dependencies {
     implementation  group: 'org.telegram', name: 'telegrambots', version: '5.3.+'
     //implementation  group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.32'
     implementation  group: 'org.jetbrains', name: 'annotations', version: '22.0.0'
-    implementation 'org.springframework.boot:spring-boot-starter'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.5.5'
-
+// https://mvnrepository.com/artifact/io.jooby/jooby
+    implementation group: 'io.jooby', name: 'jooby', version: '2.11.0'
 }
 
 wrapper {
