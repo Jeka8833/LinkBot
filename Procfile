@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -cp build/staging:build/staging/* com.Jeka8833.LinkBot.Main
+worker: java $JAVA_OPTS -Dserver.port=$PORT -cp build/staging:build/staging/* com.Jeka8833.LinkBot.Main
