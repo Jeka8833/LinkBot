@@ -7,5 +7,12 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://eu-cdbr-west-03.cleardb.net:3306/heroku_d04c1d61b22d130</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="HerokuDB" uuid="91bbe116-b4bb-4ac4-a299-60f76b5b41a8">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-54-73-152-36.eu-west-1.compute.amazonaws.com:5432/dbq0qn2tp9hja</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

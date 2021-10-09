@@ -1,9 +1,9 @@
 package com.Jeka8833.LinkBot.command;
 
-import com.Jeka8833.LinkBot.MySQL;
 import com.Jeka8833.LinkBot.Util;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
+import com.Jeka8833.dataBase.LinkBotDB;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -38,7 +38,7 @@ public class ListCmd implements Command {
                     }
                     sb.append('\n');
                     if (lesson.online)
-                        sb.append("    > ").append(MySQL.urls.getOrDefault(lesson.lesson_id, "-")).append("\n");
+                        sb.append("    > ").append(LinkBotDB.urls.getOrDefault(lesson.lesson_id, "-")).append("\n");
                     else
                         sb.append("    > ").append("Аудитория: ").append(lesson.lesson_class).append("\n");
                 }

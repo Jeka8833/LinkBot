@@ -1,10 +1,10 @@
 package com.Jeka8833.LinkBot;
 
+import com.Jeka8833.dataBase.LinkBotDB;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -45,15 +45,12 @@ public class Util {
     }
 
     public static boolean isAdmin(final long userId) {
-        for (User user : MySQL.users)
-            if (user.chatId == userId && user.isAdmin == 1)
-                return false;
-        return true;
+        return LinkBotDB.users.stream().anyMatch(user -> user.isAdmin && user.chatId == userId);
     }
 
     @Contract(pure = true)
     public static @Nullable User getUser(final long userId) {
-        for (User user : MySQL.users)
+        for (User user : LinkBotDB.users)
             if (user.chatId == userId)
                 return user;
         return null;

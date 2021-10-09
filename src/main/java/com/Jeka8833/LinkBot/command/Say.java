@@ -1,10 +1,10 @@
 package com.Jeka8833.LinkBot.command;
 
-import com.Jeka8833.LinkBot.MySQL;
 import com.Jeka8833.LinkBot.User;
 import com.Jeka8833.LinkBot.Util;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
+import com.Jeka8833.dataBase.LinkBotDB;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -18,7 +18,7 @@ public class Say implements Command {
 
     @Override
     public void receiveListener(Update update, String text) {
-        if (!MySQL.users.isEmpty()) {
+        if (!LinkBotDB.users.isEmpty()) {
             if (Util.isAdmin(update.getMessage().getChatId())) {
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты не админ");
                 return;
@@ -27,7 +27,7 @@ public class Say implements Command {
         final String[] args = text.split(" ", 2);
         switch (args[0].toLowerCase()) {
             case "text":
-                for (User user : MySQL.users) {
+                for (User user : LinkBotDB.users) {
                     Util.sendMessage(pollingBot, String.valueOf(user.chatId), args[1]);
                 }
                 break;
@@ -44,12 +44,12 @@ public class Say implements Command {
                     Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Lesson not found");
                     return;
                 }
-               for (User user : MySQL.users) {
+               for (User user : LinkBotDB.users) {
                     Util.sendMessage(pollingBot, user.chatId + "", "Быстро все на пару:" +
                             "\nНазвание: " + lesson.lesson_name +
                             "\nТип: " + lesson.lesson_type +
                             "\nПреподаватель: " + lesson.teacher_name +
-                            "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-"));
+                            "\nСсылка: " + LinkBotDB.urls.getOrDefault(lesson.lesson_id, "-"));
                 }
                 break;
             default:

@@ -1,10 +1,10 @@
 package com.Jeka8833.LinkBot.command;
 
-import com.Jeka8833.LinkBot.MySQL;
 import com.Jeka8833.LinkBot.User;
 import com.Jeka8833.LinkBot.Util;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
+import com.Jeka8833.dataBase.LinkBotDB;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -52,7 +52,7 @@ public class Next implements Command {
                         .append(lesson.online ? " Онлайн" : "")
                         .append(lesson.choice ? " Факультатив" : "")
                         .append("\nПреподаватель: ").append(lesson.teacher_name)
-                        .append(lesson.online ? "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-")
+                        .append(lesson.online ? "\nСсылка: " + LinkBotDB.urls.getOrDefault(lesson.lesson_id, "-")
                                 : "\nАудитория: " + lesson.lesson_class).append("\n\n");
 
             }

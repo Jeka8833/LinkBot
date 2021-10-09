@@ -21,6 +21,10 @@ dependencies {
     implementation  group: 'org.telegram', name: 'telegrambots', version: '5.3.+'
     //implementation  group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.32'
     implementation  group: 'org.jetbrains', name: 'annotations', version: '22.0.0'
+
+    
+    implementation 'io.vertx:vertx-web:4.1.4'
+    implementation 'org.postgresql:postgresql:42.2.24'
 }
 
 wrapper {

@@ -1,7 +1,7 @@
 package com.Jeka8833.LinkBot.command;
 
-import com.Jeka8833.LinkBot.MySQL;
 import com.Jeka8833.LinkBot.User;
+import com.Jeka8833.dataBase.LinkBotDB;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -49,11 +49,11 @@ public class Start implements Command {
             e.printStackTrace();
         }
 
-        for (User user : MySQL.users) {
+        for (User user : LinkBotDB.users) {
             if (user.chatId.equals(update.getMessage().getChatId()))
                 return;
         }
-        MySQL.users.add(new User(update.getMessage().getChatId(), (byte) 0, (byte) 0, ""));
-        MySQL.write();
+        LinkBotDB.users.add(new User(update.getMessage().getChatId(), (byte) 0, false, ""));
+        LinkBotDB.write(LinkBotDB.Table.NOTIFICATION);
     }
 }

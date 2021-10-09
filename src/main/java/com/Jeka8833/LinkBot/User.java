@@ -2,6 +2,7 @@ package com.Jeka8833.LinkBot;
 
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
+import com.Jeka8833.dataBase.LinkBotDB;
 
 import java.io.ByteArrayOutputStream;
 
@@ -9,10 +10,10 @@ public class User {
 
     public final Long chatId;
     public byte notification;
-    public final byte isAdmin;
+    public final boolean isAdmin;
     public String skipLesson;
 
-    public User(Long chatId, byte isNotification, byte isAdmin, String skipLesson) {
+    public User(Long chatId, byte isNotification, boolean isAdmin, String skipLesson) {
         this.chatId = chatId;
         this.notification = isNotification;
         this.isAdmin = isAdmin;
@@ -38,7 +39,7 @@ public class User {
                 System.arraycopy(val, 0, out, 0, val.length);
                 out[val.length] = (byte) index;
                 skipLesson = Util.bytesToHex(out);
-                MySQL.write(MySQL.Table.NOTIFICATION);
+                LinkBotDB.write(LinkBotDB.Table.NOTIFICATION);
                 return true;
             }
         }
@@ -57,12 +58,12 @@ public class User {
         if (out.length == val.length)
             return false;
         skipLesson = Util.bytesToHex(out);
-        MySQL.write(MySQL.Table.NOTIFICATION);
+        LinkBotDB.write(LinkBotDB.Table.NOTIFICATION);
         return true;
     }
 
     public void resetSkip() {
         skipLesson = "";
-        MySQL.write(MySQL.Table.NOTIFICATION);
+        LinkBotDB.write(LinkBotDB.Table.NOTIFICATION);
     }
 }

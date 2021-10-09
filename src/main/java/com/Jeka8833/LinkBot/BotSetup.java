@@ -3,6 +3,7 @@ package com.Jeka8833.LinkBot;
 import com.Jeka8833.LinkBot.command.*;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
+import com.Jeka8833.dataBase.LinkBotDB;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -36,7 +37,7 @@ public class BotSetup extends TelegramLongPollingBot {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (MySQL.onNotification != 0) {
+                if (LinkBotDB.onNotification != 0) {
                     final List<Lesson> lessons = KPI.getDayLessons();
                     if (lessons.isEmpty())
                         return;
@@ -48,7 +49,7 @@ public class BotSetup extends TelegramLongPollingBot {
                         secondList.add((lesson.timeToStart() - time) / 60);
                     }
 
-                    for (User user : MySQL.users) {
+                    for (User user : LinkBotDB.users) {
                         if (user.notification == 0)
                             continue;
                         boolean send = false;
@@ -62,7 +63,7 @@ public class BotSetup extends TelegramLongPollingBot {
                                         "\nНазвание: " + lesson.lesson_name +
                                         "\nТип: " + lesson.lesson_type + (lesson.online ? " Онлайн" : "") + (lesson.choice ? " Факультатив" : "") +
                                         "\nПреподаватель: " + lesson.teacher_name +
-                                        (lesson.online ? "\nСсылка: " + MySQL.urls.getOrDefault(lesson.lesson_id, "-")
+                                        (lesson.online ? "\nСсылка: " + LinkBotDB.urls.getOrDefault(lesson.lesson_id, "-")
                                                 : "\nАудитория: " + lesson.lesson_class));
                                 send = true;
                             }

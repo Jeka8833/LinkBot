@@ -1,6 +1,6 @@
 package com.Jeka8833.LinkBot.kpi;
 
-import com.Jeka8833.LinkBot.MySQL;
+import com.Jeka8833.dataBase.LinkBotDB;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public class KPI {
 
     public static int getWeek() {
         updateTime();
-        return (calendar.get(Calendar.WEEK_OF_YEAR) + MySQL.shiftWeek) % 2;
+        return (calendar.get(Calendar.WEEK_OF_YEAR) + LinkBotDB.shiftWeek) % 2;
     }
 
     public static int getDay() {
