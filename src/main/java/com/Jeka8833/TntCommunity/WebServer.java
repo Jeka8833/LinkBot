@@ -1,7 +1,7 @@
 package com.Jeka8833.TntCommunity;
 
-import com.Jeka8833.LinkBot.Main;
 import com.Jeka8833.LinkBot.Util;
+import com.google.gson.Gson;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
@@ -12,6 +12,8 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 
 public class WebServer extends AbstractVerticle {
+
+    public static final Gson gson = new Gson();
 
     private final int port;
 
@@ -30,7 +32,8 @@ public class WebServer extends AbstractVerticle {
 
         Router router = Router.router(vertx);
 
-        router.route().handler(BodyHandler.create());
+        router.route().handler(BodyHandler.create().setBodyLimit(1024L * 1024L)); // MB
+
         router.route(HttpMethod.POST, "/lol").handler(rc -> {
             JsonObject json = rc.getBodyAsJson();
             System.out.println(json.getString("id"));
@@ -42,12 +45,14 @@ public class WebServer extends AbstractVerticle {
         });
         router.route("/kek").handler(rc -> {
             HttpServerResponse response = rc.response();
-            response.putHeader("content-type", "application/json");
-            try {
-                Main.db.statement.executeQuery("SELECT * FROM \"LB_Users\"");
-                response.end("{\"status\": \"good\"}");
-            } catch (Exception e) {
-                response.end("{\"status\": \"" + e.getMessage() + "\"}");
+            response.putHeader("content-type", "text/event-stream");
+            for (int i = 0; i < 100; i++) {
+                try {
+                    response.write("Test 1");
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         router.route("/hello").handler(event -> {
