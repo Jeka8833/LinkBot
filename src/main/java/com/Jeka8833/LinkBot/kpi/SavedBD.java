@@ -141,7 +141,7 @@ public class SavedBD {
                 "lesson_class": "333-12",
                 "time_start": "10:25:00",
                 "time_end": "12:00:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -155,7 +155,7 @@ public class SavedBD {
                 "lesson_class": "433-12",
                 "time_start": "12:20:00",
                 "time_end": "13:55:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -169,7 +169,7 @@ public class SavedBD {
                 "lesson_class": "310-12",
                 "time_start": "14:15:00",
                 "time_end": "15:50:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -183,7 +183,7 @@ public class SavedBD {
                 "lesson_class": "321-12",
                 "time_start": "08:30:00",
                 "time_end": "10:05:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -421,7 +421,7 @@ public class SavedBD {
                 "lesson_class": "07в-12",
                 "time_start": "08:30:00",
                 "time_end": "10:05:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -435,7 +435,7 @@ public class SavedBD {
                 "lesson_class": "333-12",
                 "time_start": "10:25:00",
                 "time_end": "12:00:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -449,7 +449,7 @@ public class SavedBD {
                 "lesson_class": "433-12",
                 "time_start": "12:20:00",
                 "time_end": "13:55:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {
@@ -463,7 +463,7 @@ public class SavedBD {
                 "lesson_class": "409-12",
                 "time_start": "14:15:00",
                 "time_end": "15:50:00",
-                "online": false,
+                "online": true,
                 "choice": false
               },
               {

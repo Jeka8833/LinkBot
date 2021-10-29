@@ -1,8 +1,7 @@
 package com.Jeka8833.LinkBot;
 
 import com.Jeka8833.LinkBot.kpi.KPI;
-import com.Jeka8833.TntCommunity.TntCommunity;
-import com.Jeka8833.TntCommunity.WebServer;
+import com.Jeka8833.TntCommunity.Server;
 import com.Jeka8833.dataBase.DatabaseManager;
 import com.Jeka8833.dataBase.LinkBotDB;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -17,8 +16,7 @@ public class Main {
         db = new DatabaseManager(Util.getParam(args, "-db_url"), Util.getParam(args, "-db_user"),
                 Util.getParam(args, "-db_pass"));
         db.connect();
-        TntCommunity.main(args);
-        WebServer.main(args);
+        Server.main(args);
         KPI.init();
         LinkBotDB.read();
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
