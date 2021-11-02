@@ -1,21 +1,19 @@
 package com.Jeka8833.LinkBot.kpi;
 
+import com.Jeka8833.LinkBot.Main;
 import com.Jeka8833.dataBase.LinkBotDB;
-import com.google.gson.Gson;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class KPI {
 
-    private static final Gson gson = new Gson();
     private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("Europe/Kiev");
     public static Calendar calendar = Calendar.getInstance(TIME_ZONE);
 
     public static List<Lesson> lessons;
 
     public static void init() {
-        lessons = Arrays.asList(gson.fromJson(SavedBD.data, Lesson[].class));
+        lessons = Arrays.asList(Main.gson.fromJson(SavedBD.data, Lesson[].class));
     }
 
     private static void updateTime() {
@@ -37,7 +35,7 @@ public class KPI {
         return calendar.get(Calendar.DAY_OF_WEEK) - 1;
     }
 
-    public static @NotNull List<Lesson> getDayLessons(final int week, final int day) {
+    public static List<Lesson> getDayLessons(final int week, final int day) {
         final List<Lesson> lessons = new ArrayList<>();
         for (Lesson lesson : KPI.lessons)
             if (lesson.lesson_week == week + 1 && lesson.day_number == day)
@@ -46,7 +44,7 @@ public class KPI {
         return lessons;
     }
 
-    public static @NotNull List<Lesson> getDayLessons() {
+    public static List<Lesson> getDayLessons() {
         return getDayLessons(getWeek(), getDay());
     }
 }
