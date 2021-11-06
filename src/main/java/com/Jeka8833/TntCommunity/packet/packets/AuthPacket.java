@@ -1,10 +1,10 @@
 package com.Jeka8833.TntCommunity.packet.packets;
 
-import com.Jeka8833.TntCommunity.HypixelAPI;
-import com.Jeka8833.TntCommunity.TNTUser;
 import com.Jeka8833.TntCommunity.packet.Packet;
 import com.Jeka8833.TntCommunity.packet.PacketInputStream;
 import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
+import com.Jeka8833.TntCommunity.TNTUser;
+import com.Jeka8833.TntCommunity.util.Util;
 import org.java_websocket.WebSocket;
 
 import java.io.IOException;
@@ -35,16 +35,16 @@ public class AuthPacket implements Packet {
     @Override
     public void serverProcess(final WebSocket socket, final TNTUser user) {
         if (executor.getQueue().size() == executor.getMaximumPoolSize()) {
-            socket.close(1, "Auth server is overloading");
-            return;
+            socket.close(101, "Auth server is overloading");
+        } else {
+            executor.execute(() -> {
+                if (Util.checkKey(this.user, key)) {
+                    socket.setAttachment(key);
+                    TNTUser.login(this.user, version);
+                } else {
+                    socket.close(102, "Fail login, maybe Hypixel API down");
+                }
+            });
         }
-        executor.execute(() -> {
-            if (HypixelAPI.checkKey(this.user, key)) {
-                socket.setAttachment(key);
-                TNTUser.login(this.user);
-            } else {
-                socket.close(2, "Fail login, maybe Hypixel API down");
-            }
-        });
     }
 }

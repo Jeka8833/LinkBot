@@ -8,31 +8,34 @@ import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
 import org.java_websocket.WebSocket;
 
 import java.io.IOException;
+import java.util.UUID;
 
-public class PingPacket implements Packet {
+public class ChatPacket implements Packet {
 
-    private long time;
+    private UUID user;
+    private String text;
 
-    public PingPacket() {
-        this(System.currentTimeMillis());
+    public ChatPacket() {
     }
 
-    public PingPacket(final long time) {
-        this.time = time;
+    public ChatPacket(UUID user, String text) {
+        this.user = user;
+        this.text = text;
     }
 
     @Override
     public void write(PacketOutputStream stream) throws IOException {
-        stream.writeLong(time);
+        stream.writeUUID(user);
+        stream.writeUTF(text);
     }
 
     @Override
     public void read(PacketInputStream stream) throws IOException {
-        time = stream.readLong();
+        text = stream.readUTF();
     }
 
     @Override
-    public void serverProcess(WebSocket socket, final TNTUser user) {
-        Server.serverSend(socket, new PingPacket(time));
+    public void serverProcess(WebSocket socket, TNTUser user) {
+        Server.serverBroadcast(new ChatPacket(user.user, text));
     }
 }

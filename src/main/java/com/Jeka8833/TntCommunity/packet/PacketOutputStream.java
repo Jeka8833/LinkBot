@@ -1,5 +1,7 @@
 package com.Jeka8833.TntCommunity.packet;
 
+import com.Jeka8833.TntCommunity.Server;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.FilterOutputStream;
@@ -26,9 +28,8 @@ public class PacketOutputStream extends DataOutputStream {
 
     public ByteBuffer getByteBuffer(final Class<? extends Packet> type) {
         final byte[] arr = ((ByteArrayOutputStream) this.out).toByteArray();
-        final byte[] out = new byte[arr.length + 1];
-        out[0] = PacketManager.packetsList.getKey(type);
-        System.arraycopy(arr, 0, out, 1, arr.length);
-        return ByteBuffer.wrap(out);
+        return ByteBuffer.allocate(arr.length + 1)
+                .put(Server.packetsList.getKey(type))
+                .put(arr, 1, arr.length);
     }
 }

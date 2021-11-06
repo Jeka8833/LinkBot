@@ -13,18 +13,16 @@ public class TNTUser {
 
     public final UUID user;
     public final UUID key;
-    public final String version;
+    public String version;
 
     public long timeLogin;
-    public long lastTimePacket;
+    private long lastTimePacket;
 
-    public long activeModules;
+    public long activeModules; // Need use
     public long blockModules;
 
     public byte donate;
     public byte status;
-
-    public boolean needWrite;
 
     public TNTUser(final UUID user, final UUID key, final String version) {
         this.user = user;
@@ -32,11 +30,12 @@ public class TNTUser {
         this.version = version;
     }
 
-    public static void login(final UUID user) {
+    public static void login(final UUID user, final String version) {
         TNTClientDB.readAsync(Collections.singletonList(user), users -> {
             if (users.isEmpty())
                 throw new NullPointerException("Returned collection is empty");
             final TNTUser tntUser = users.get(0);
+            tntUser.version = version;
             tntUser.timeLogin = System.currentTimeMillis();
             TNTClientDB.writeList.add(tntUser);
         });
@@ -46,9 +45,18 @@ public class TNTUser {
         lastTimePacket = System.currentTimeMillis();
     }
 
+    public boolean isUserDead() {
+        return System.currentTimeMillis() - lastTimePacket > 30_000;
+    }
+
+    public boolean isClient() {
+        return version != null;
+    }
+
     public static void addUser(final TNTUser tntUser) {
         keyUserList.put(tntUser.key, tntUser);
         uuidUserList.put(tntUser.user, tntUser);
+        tntUser.heartBeat();
     }
 
     public static final Map<UUID, TNTUser> keyUserList = new HashMap<>();
