@@ -19,7 +19,7 @@ public class Say implements Command {
     @Override
     public void receiveListener(Update update, String text) {
         if (!LinkBotDB.users.isEmpty()) {
-            if (Util.isAdmin(update.getMessage().getChatId())) {
+            if (!Util.isAdmin(update.getMessage().getChatId())) {
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты не админ");
                 return;
             }
@@ -44,7 +44,7 @@ public class Say implements Command {
                     Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Lesson not found");
                     return;
                 }
-               for (User user : LinkBotDB.users) {
+                for (User user : LinkBotDB.users) {
                     Util.sendMessage(pollingBot, user.chatId + "", "Быстро все на пару:" +
                             "\nНазвание: " + lesson.lesson_name +
                             "\nТип: " + lesson.lesson_type +

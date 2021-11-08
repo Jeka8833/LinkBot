@@ -17,7 +17,7 @@ public class Setting implements Command {
     @Override
     public void receiveListener(Update update, String text) {
         if (!LinkBotDB.users.isEmpty()) {
-            if (Util.isAdmin(update.getMessage().getChatId())) {
+            if (!Util.isAdmin(update.getMessage().getChatId())) {
                 Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты не админ");
                 return;
             }
