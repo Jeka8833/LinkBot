@@ -1,6 +1,7 @@
 package com.Jeka8833.LinkBot;
 
 import com.Jeka8833.LinkBot.kpi.KPI;
+import com.Jeka8833.TntCommunity.Server;
 import com.Jeka8833.dataBase.DatabaseManager;
 import com.Jeka8833.dataBase.LinkBotDB;
 import com.google.gson.Gson;
@@ -17,6 +18,7 @@ public class Main {
                 Util.getParam(args, "-db_pass"));
         KPI.init();
         LinkBotDB.read();
+        Server.main(args);
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(new BotSetup(Util.getParam(args, "-name"), Util.getParam(args, "-token")));
         System.out.println("All user which enable notification:");
