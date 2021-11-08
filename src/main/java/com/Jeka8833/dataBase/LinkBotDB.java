@@ -17,9 +17,9 @@ public class LinkBotDB {
     public static final List<User> users = new ArrayList<>();
 
     public static void read() {
-        Main.db.checkConnect();
+        DatabaseManager.db.checkConnect();
 
-        try (ResultSet resultSet = Main.db.statement.executeQuery("SELECT * FROM \"LB_Setting\"")) {
+        try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery("SELECT * FROM \"LB_Setting\"")) {
             while (resultSet.next()) {
                 switch (resultSet.getString(1)) {
                     case "weekShift" -> shiftWeek = resultSet.getInt(2);
@@ -30,7 +30,7 @@ public class LinkBotDB {
             ex.printStackTrace();
         }
 
-        try (ResultSet resultSet = Main.db.statement.executeQuery("SELECT * FROM \"LB_Links\"")) {
+        try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery("SELECT * FROM \"LB_Links\"")) {
             while (resultSet.next()) {
                 urls.put(resultSet.getInt(1), resultSet.getString(2));
             }
@@ -38,7 +38,7 @@ public class LinkBotDB {
             ex.printStackTrace();
         }
 
-        try (ResultSet resultSet = Main.db.statement.executeQuery("SELECT * FROM \"LB_Users\"")) {
+        try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery("SELECT * FROM \"LB_Users\"")) {
             users.clear();
             while (resultSet.next()) {
                 users.add(new User(resultSet.getLong(1), resultSet.getByte(2),
@@ -56,11 +56,11 @@ public class LinkBotDB {
     }
 
     public static void write(final Table table) {
-        Main.db.checkConnect();
+        DatabaseManager.db.checkConnect();
         switch (table) {
             case SETTING:
                 try {
-                    Main.db.statement.executeUpdate("INSERT INTO \"LB_Setting\" (\"Name\", \"Value\") " +
+                    DatabaseManager.db.statement.executeUpdate("INSERT INTO \"LB_Setting\" (\"Name\", \"Value\") " +
                             "VALUES ('weekShift', " + shiftWeek + "), ('notification', " + onNotification + ") " +
                             "ON CONFLICT (\"Name\") DO UPDATE SET \"Value\" = EXCLUDED.\"Value\"");
                 } catch (Exception ex) {
@@ -75,7 +75,7 @@ public class LinkBotDB {
                     }
                     sb.delete(sb.length() - 1, sb.length())
                             .append("ON CONFLICT (\"id\") DO UPDATE SET \"link\" = EXCLUDED.\"link\"");
-                    Main.db.statement.executeUpdate(sb.toString());
+                    DatabaseManager.db.statement.executeUpdate(sb.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -91,7 +91,7 @@ public class LinkBotDB {
                     sb.delete(sb.length() - 1, sb.length())
                             .append("ON CONFLICT (\"id\") DO UPDATE SET \"timeNotification\" = EXCLUDED.\"timeNotification\"," +
                                     " \"skipLesson\" = EXCLUDED.\"skipLesson\"");
-                    Main.db.statement.executeUpdate(sb.toString());
+                    DatabaseManager.db.statement.executeUpdate(sb.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -1,9 +1,6 @@
 package com.Jeka8833.LinkBot;
 
 import com.Jeka8833.dataBase.LinkBotDB;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -17,7 +14,7 @@ public class Util {
 
     private static final String[] dayName = {"*Воскресенье:*", "*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
 
-    public static String readInputStream(final @NotNull InputStream inputStream) {
+    public static String readInputStream(final InputStream inputStream) {
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream()) {
             final byte[] buffer = new byte[1024];
             int length;
@@ -31,7 +28,7 @@ public class Util {
         throw new NullPointerException("Fail read InputStream");
     }
 
-    public static void sendMessage(final @NotNull TelegramLongPollingBot bot, final String chatId, final String text) {
+    public static void sendMessage(final TelegramLongPollingBot bot, final String chatId, final String text) {
         final SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.enableMarkdown(true);
@@ -48,16 +45,14 @@ public class Util {
         return LinkBotDB.users.stream().anyMatch(user -> user.isAdmin && user.chatId == userId);
     }
 
-    @Contract(pure = true)
-    public static @Nullable User getUser(final long userId) {
+    public static User getUser(final long userId) {
         for (User user : LinkBotDB.users)
             if (user.chatId == userId)
                 return user;
         return null;
     }
 
-    @Contract(pure = true)
-    public static @NotNull String toTimeFormat(final int second) {
+    public static String toTimeFormat(final int second) {
         int hours = second / 3600;
         int mins = second / 60 % 60;
         int secs = second % 60;
@@ -65,19 +60,19 @@ public class Util {
     }
 
 
-    public static String getParam(final String @NotNull [] args, final String key) {
+    public static String getParam(final String[] args, final String key) {
         for (int i = 0; i < args.length - 1; i++)
             if (args[i].equalsIgnoreCase(key))
                 return args[i + 1];
         return System.getenv(key.substring(1).toUpperCase());
     }
 
-    public static int parseTime(final @NotNull String time) {
+    public static int parseTime(final String time) {
         final String[] arg = time.split(":");
         return Integer.parseInt(arg[0]) * 60 * 60 + Integer.parseInt(arg[1]) * 60 + Integer.parseInt(arg[2]);
     }
 
-    public static byte @NotNull [] hexStringToByteArray(String s) {
+    public static byte[] hexStringToByteArray(String s) {
         if (s == null)
             return new byte[0];
         int len = s.length();
