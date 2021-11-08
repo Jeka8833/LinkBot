@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp build/staging:build/staging/* com.Jeka8833.LinkBot.Main
+web: java $JAVA_OPTS -cp build/staging:build/staging/* com.Jeka8833.LinkBot.Main -port $PORT
