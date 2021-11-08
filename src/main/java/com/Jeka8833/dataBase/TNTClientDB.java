@@ -77,12 +77,10 @@ public class TNTClientDB {
         DatabaseManager.db.checkConnect();
         final StringBuilder sb = new StringBuilder("SELECT * FROM \"TC_Users\" WHERE \"user\" IN (");
 
-        final Set<UUID> copy = new HashSet<>(readList);
-        readList.clear();
+        final Set<UUID> temp = new HashSet<>(readList);
 
-        for (UUID user : copy) {
+        for (UUID user : temp)
             sb.append("'").append(user).append("',");
-        }
         sb.delete(sb.length() - 1, sb.length()).append(")");
 
         try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery(sb.toString())) {
@@ -97,6 +95,11 @@ public class TNTClientDB {
                 TNTUser.addUser(userStats);
             }
         }
+
+        // Clear read list if request is success
+        for (UUID user : temp)
+            readList.remove(user);
+
         final Iterator<UpdateDB> iterator = callbackList.iterator();
         while (iterator.hasNext()) {
             final UpdateDB updateDB = iterator.next();
@@ -111,7 +114,8 @@ public class TNTClientDB {
         DatabaseManager.db.checkConnect();
         final StringBuilder sb = new StringBuilder("INSERT INTO \"TC_Users\" (\"user\", \"key\", \"version\", \"timeLogin\", \"blockModules\", \"donate\", \"status\") \n" +
                 "VALUES ");
-        for (TNTUser user : writeList) {
+        final Set<TNTUser> temp = new HashSet<>(writeList);
+        for (TNTUser user : temp) {
             sb.append("('").append(user.user)
                     .append("','").append(user.key).append("','")
                     .append(user.version).append("','")
@@ -124,6 +128,10 @@ public class TNTClientDB {
                 .append(" ON CONFLICT (\"user\", \"key\") DO UPDATE SET \"key\" = EXCLUDED.\"key\", \"version\" = EXCLUDED.\"version\", \"timeLogin\" = EXCLUDED.\"timeLogin\", \n" +
                         "\"blockModules\" = EXCLUDED.\"blockModules\", \"donate\" = EXCLUDED.\"donate\", \"status\" = EXCLUDED.\"status\"");
         DatabaseManager.db.statement.executeUpdate(sb.toString());
+
+        // Clear write list if request is success
+        for (TNTUser user : temp)
+            writeList.remove(user);
     }
 
     private interface UpdateDB {

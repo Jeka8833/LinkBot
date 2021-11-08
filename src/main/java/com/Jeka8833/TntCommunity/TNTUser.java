@@ -4,10 +4,7 @@ import com.Jeka8833.TntCommunity.packet.packets.BlockModulesPacket;
 import com.Jeka8833.dataBase.TNTClientDB;
 import org.java_websocket.WebSocket;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class TNTUser {
 
@@ -57,6 +54,19 @@ public class TNTUser {
 
     public boolean isClient() {
         return version != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TNTUser tntUser)) return false;
+
+        return Objects.equals(user, tntUser.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return user != null ? user.hashCode() : 0;
     }
 
     public static void addUser(final TNTUser tntUser) {
