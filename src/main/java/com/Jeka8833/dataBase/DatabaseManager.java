@@ -51,4 +51,11 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
+    public static DatabaseManager db;
+
+    public static void initConnect(final String host, final String userName, final String password) {
+        db = new DatabaseManager(host, userName, password);
+        db.connect();
+    }
 }

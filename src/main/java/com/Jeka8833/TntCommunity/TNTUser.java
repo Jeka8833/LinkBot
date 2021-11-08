@@ -1,8 +1,13 @@
 package com.Jeka8833.TntCommunity;
 
+import com.Jeka8833.TntCommunity.packet.packets.BlockModulesPacket;
 import com.Jeka8833.dataBase.TNTClientDB;
+import org.java_websocket.WebSocket;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class TNTUser {
 
@@ -18,7 +23,7 @@ public class TNTUser {
     public long timeLogin;
     private long lastTimePacket;
 
-    public long activeModules; // Need use
+    public long activeModules;
     public long blockModules;
 
     public byte donate;
@@ -30,7 +35,7 @@ public class TNTUser {
         this.version = version;
     }
 
-    public static void login(final UUID user, final String version) {
+    public static void login(final WebSocket socket, final UUID user, final String version) {
         TNTClientDB.readAsync(Collections.singletonList(user), users -> {
             if (users.isEmpty())
                 throw new NullPointerException("Returned collection is empty");
@@ -38,6 +43,7 @@ public class TNTUser {
             tntUser.version = version;
             tntUser.timeLogin = System.currentTimeMillis();
             TNTClientDB.writeList.add(tntUser);
+            Server.serverSend(socket, new BlockModulesPacket(tntUser.blockModules));
         });
     }
 

@@ -40,7 +40,7 @@ public class AuthPacket implements Packet {
             executor.execute(() -> {
                 if (Util.checkKey(this.user, key)) {
                     socket.setAttachment(key);
-                    TNTUser.login(this.user, version);
+                    TNTUser.login(socket, this.user, version);
                 } else {
                     socket.close(102, "Fail login, maybe Hypixel API down");
                 }

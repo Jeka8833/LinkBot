@@ -11,12 +11,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class Main {
 
     public static final Gson gson = new Gson();
-    public static DatabaseManager db;
 
     public static void main(String[] args) throws TelegramApiException {
-        db = new DatabaseManager(Util.getParam(args, "-db_url"), Util.getParam(args, "-db_user"),
+        DatabaseManager.initConnect(Util.getParam(args, "-db_url"), Util.getParam(args, "-db_user"),
                 Util.getParam(args, "-db_pass"));
-        db.connect();
         KPI.init();
         LinkBotDB.read();
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);

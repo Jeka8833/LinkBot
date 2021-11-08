@@ -1,6 +1,5 @@
 package com.Jeka8833.dataBase;
 
-import com.Jeka8833.LinkBot.Main;
 import com.Jeka8833.TntCommunity.Server;
 import com.Jeka8833.TntCommunity.TNTUser;
 import org.apache.logging.log4j.LogManager;
@@ -73,7 +72,9 @@ public class TNTClientDB {
     }
 
     public static void readUser() throws SQLException {
-        Main.db.checkConnect();
+        if (readList.isEmpty())
+            return;
+        DatabaseManager.db.checkConnect();
         final StringBuilder sb = new StringBuilder("SELECT * FROM \"TC_Users\" WHERE \"user\" IN (");
 
         final Set<UUID> copy = new HashSet<>(readList);
@@ -84,7 +85,7 @@ public class TNTClientDB {
         }
         sb.delete(sb.length() - 1, sb.length()).append(")");
 
-        try (ResultSet resultSet = Main.db.statement.executeQuery(sb.toString())) {
+        try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery(sb.toString())) {
             while (resultSet.next()) {
                 final TNTUser userStats = new TNTUser(resultSet.getObject("user", UUID.class),
                         resultSet.getObject("key", UUID.class), resultSet.getString("version"));
@@ -105,7 +106,9 @@ public class TNTClientDB {
     }
 
     public static void writeUser() throws SQLException {
-        Main.db.checkConnect();
+        if (writeList.isEmpty())
+            return;
+        DatabaseManager.db.checkConnect();
         final StringBuilder sb = new StringBuilder("INSERT INTO \"TC_Users\" (\"user\", \"key\", \"version\", \"timeLogin\", \"blockModules\", \"donate\", \"status\") \n" +
                 "VALUES ");
         for (TNTUser user : writeList) {
@@ -118,9 +121,9 @@ public class TNTClientDB {
                     .append(user.status).append("),");
         }
         sb.delete(sb.length() - 1, sb.length())
-                .append(" ON CONFLICT (\"user\") DO UPDATE SET \"key\" = EXCLUDED.\"key\", \"version\" = EXCLUDED.\"version\", \"timeLogin\" = EXCLUDED.\"timeLogin\", \n" +
+                .append(" ON CONFLICT (\"user\", \"key\") DO UPDATE SET \"key\" = EXCLUDED.\"key\", \"version\" = EXCLUDED.\"version\", \"timeLogin\" = EXCLUDED.\"timeLogin\", \n" +
                         "\"blockModules\" = EXCLUDED.\"blockModules\", \"donate\" = EXCLUDED.\"donate\", \"status\" = EXCLUDED.\"status\"");
-        Main.db.statement.executeUpdate(sb.toString());
+        DatabaseManager.db.statement.executeUpdate(sb.toString());
     }
 
     private interface UpdateDB {

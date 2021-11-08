@@ -1,11 +1,11 @@
 package com.Jeka8833.TntCommunity;
 
 import com.Jeka8833.LinkBot.Util;
-import com.Jeka8833.TntCommunity.util.BiMap;
 import com.Jeka8833.TntCommunity.packet.Packet;
 import com.Jeka8833.TntCommunity.packet.PacketInputStream;
 import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
 import com.Jeka8833.TntCommunity.packet.packets.*;
+import com.Jeka8833.TntCommunity.util.BiMap;
 import com.Jeka8833.dataBase.TNTClientDB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +34,7 @@ public class Server extends WebSocketServer {
         packetsList.put((byte) 4, RequestPlayerStatusPacket.class);
         packetsList.put((byte) 5, SendPlayerStatusPacket.class);
         packetsList.put((byte) 6, ChatPacket.class);
+        packetsList.put((byte) 7, BlockModulesPacket.class);
     }
 
     public Server(final InetSocketAddress address) {
@@ -102,6 +103,8 @@ public class Server extends WebSocketServer {
 
     public static void main(String[] args) {
         try {
+            //DatabaseManager.initConnect(Util.getParam(args, "-db_url"), Util.getParam(args, "-db_user"),
+            //        Util.getParam(args, "-db_pass"));
             server = new Server(new InetSocketAddress(Integer.parseInt(Util.getParam(args, "-port"))));
             server.start();
             TNTClientDB.init();
