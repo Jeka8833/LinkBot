@@ -10,7 +10,7 @@ import org.java_websocket.WebSocket;
 import java.io.IOException;
 import java.util.List;
 
-public record SendPlayerStatusPacket(List<TNTUser> users) implements Packet {
+public record SendPlayerStatusPacket(List<TNTUser> users, boolean isAdmin) implements Packet {
 
     @Override
     public void write(PacketOutputStream stream) throws IOException {
@@ -20,13 +20,14 @@ public record SendPlayerStatusPacket(List<TNTUser> users) implements Packet {
             stream.writeBoolean(user.isClient());
             if (user.isClient()) {
                 stream.writeByte(user.donate);
-                stream.writeUTF(user.version);
                 stream.writeByte(switch (user.status) {
                     case TNTUser.STATUS_ONLINE -> 3;
                     case TNTUser.STATUS_AFK -> 2;
                     default -> 0;
                 });
-                stream.writeBoolean(Util.isActiveModule(user.activeModules, Util.DJFix));
+                stream.writeLong(isAdmin ? user.activeModules : user.activeModules & Util.DJFix);
+                stream.writeUTF(user.version);
+                stream.writeUTF((isAdmin || user.status > 1) ? user.gameInfo : "");
             }
         }
     }

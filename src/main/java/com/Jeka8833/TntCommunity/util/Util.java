@@ -14,12 +14,7 @@ public class Util {
 
     private static final Logger logger = LogManager.getLogger(Util.class);
 
-
-    public static final long DJFix = 0b0000_0000_0000_0000_0000_0000_0000_0001;
-
-    public static boolean isActiveModule(final long list, final long module) {
-        return (list & module) == module;
-    }
+    public static final long DJFix = 1L << 6;
 
     private static final HttpClient client = HttpClient.newHttpClient();
 

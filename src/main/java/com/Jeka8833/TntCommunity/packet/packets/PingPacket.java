@@ -14,7 +14,7 @@ public class PingPacket implements Packet {
     private long time;
 
     public PingPacket() {
-        this(System.currentTimeMillis());
+        this(0);
     }
 
     public PingPacket(final long time) {

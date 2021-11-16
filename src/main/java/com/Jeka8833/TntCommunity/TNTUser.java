@@ -16,15 +16,20 @@ public class TNTUser {
     public final UUID user;
     public final UUID key;
     public String version;
+    public String gameInfo;
 
     public long timeLogin;
     private long lastTimePacket;
 
     public long activeModules;
-    public long blockModules;
+
+    public long forceBlock;
+    public long forceActive;
 
     public byte donate;
     public byte status;
+
+    public int fight;
 
     public TNTUser(final UUID user, final UUID key, final String version) {
         this.user = user;
@@ -40,7 +45,7 @@ public class TNTUser {
             tntUser.version = version;
             tntUser.timeLogin = System.currentTimeMillis();
             TNTClientDB.writeList.add(tntUser);
-            Server.serverSend(socket, new BlockModulesPacket(tntUser.blockModules));
+            Server.serverSend(socket, new BlockModulesPacket(tntUser.forceBlock, tntUser.forceActive));
         });
     }
 

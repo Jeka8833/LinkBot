@@ -25,7 +25,7 @@ public class Server extends WebSocketServer {
 
     public static final BiMap<Byte, Class<? extends Packet>> packetsList = new BiMap<>();
 
-    private static Server server;
+    public static Server server;
 
     static {
         packetsList.put((byte) 1, ActiveModulesPacket.class);
@@ -35,6 +35,9 @@ public class Server extends WebSocketServer {
         packetsList.put((byte) 5, SendPlayerStatusPacket.class);
         packetsList.put((byte) 6, ChatPacket.class);
         packetsList.put((byte) 7, BlockModulesPacket.class);
+        packetsList.put((byte) 8, GameInfoPacket.class);
+        packetsList.put((byte) 9, FightPacket.class);
+
     }
 
     public Server(final InetSocketAddress address) {

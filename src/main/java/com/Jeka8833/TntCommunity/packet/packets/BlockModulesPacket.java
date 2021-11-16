@@ -10,19 +10,22 @@ import java.io.IOException;
 
 public class BlockModulesPacket implements Packet {
 
-    private final long modules;
+    private final long block;
+    private final long active;
 
     public BlockModulesPacket() {
-        this(0);
+        this(0, 0);
     }
 
-    public BlockModulesPacket(final long modules) {
-        this.modules = modules;
+    public BlockModulesPacket(final long block, long active) {
+        this.block = block;
+        this.active = active;
     }
 
     @Override
     public void write(PacketOutputStream stream) throws IOException {
-        stream.writeLong(modules);
+        stream.writeLong(block);
+        stream.writeLong(active);
     }
 
     @Override
