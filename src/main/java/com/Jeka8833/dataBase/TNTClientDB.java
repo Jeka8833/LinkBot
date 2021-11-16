@@ -89,7 +89,7 @@ public class TNTClientDB {
                         resultSet.getObject("key", UUID.class), resultSet.getString("version"));
                 final Date date = resultSet.getTimestamp("timeLogin");
                 userStats.timeLogin = date == null ? System.currentTimeMillis() : date.getTime();
-                userStats.blockModules = resultSet.getLong("blockModules");
+                userStats.forceBlock = resultSet.getLong("blockModules");
                 userStats.donate = resultSet.getByte("donate");
                 userStats.status = resultSet.getByte("status");
                 TNTUser.addUser(userStats);
@@ -120,7 +120,7 @@ public class TNTClientDB {
                     .append("','").append(user.key).append("','")
                     .append(user.version).append("','")
                     .append(formatter.format(new Date(user.timeLogin))).append("',")
-                    .append(user.blockModules).append(",")
+                    .append(user.forceBlock).append(",")
                     .append(user.donate).append(",")
                     .append(user.status).append("),");
         }
