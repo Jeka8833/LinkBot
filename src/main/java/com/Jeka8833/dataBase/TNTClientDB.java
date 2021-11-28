@@ -85,8 +85,9 @@ public class TNTClientDB {
 
         try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery(sb.toString())) {
             while (resultSet.next()) {
-                final TNTUser userStats = new TNTUser(resultSet.getObject("user", UUID.class),
-                        resultSet.getObject("key", UUID.class), resultSet.getString("version"));
+                final UUID user = resultSet.getObject("user", UUID.class);
+                final TNTUser userStats = TNTUser.uuidUserList.getOrDefault(user, new TNTUser(user,
+                        resultSet.getObject("key", UUID.class), resultSet.getString("version")));
                 final Date date = resultSet.getTimestamp("timeLogin");
                 userStats.timeLogin = date == null ? System.currentTimeMillis() : date.getTime();
                 userStats.forceBlock = resultSet.getLong("blockModules");
