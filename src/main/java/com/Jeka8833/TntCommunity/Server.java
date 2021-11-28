@@ -63,7 +63,7 @@ public class Server extends WebSocketServer {
         try (final PacketInputStream stream = new PacketInputStream(message)) {
             final TNTUser user = TNTUser.keyUserList.get((UUID) conn.getAttachment());
             if (user == null && !(stream.packet instanceof AuthPacket)) {
-                conn.close(101, "Incorrect packet sequence.");
+                conn.close();
             } else {
                 stream.packet.read(stream);
                 stream.packet.serverProcess(conn, user);
