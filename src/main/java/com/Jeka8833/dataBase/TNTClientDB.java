@@ -88,6 +88,8 @@ public class TNTClientDB {
                 final UUID user = resultSet.getObject("user", UUID.class);
                 final TNTUser userStats = TNTUser.uuidUserList.getOrDefault(user, new TNTUser(user,
                         resultSet.getObject("key", UUID.class), resultSet.getString("version")));
+                System.out.println(TNTUser.uuidUserList.containsKey(user) + " " +
+                        (TNTUser.uuidUserList.containsKey(user) ? TNTUser.uuidUserList.get(user) : " - ") + " " + userStats);
                 final Date date = resultSet.getTimestamp("timeLogin");
                 userStats.timeLogin = date == null ? System.currentTimeMillis() : date.getTime();
                 userStats.forceBlock = resultSet.getLong("blockModules");

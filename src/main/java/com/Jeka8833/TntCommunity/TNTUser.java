@@ -75,6 +75,24 @@ public class TNTUser {
         return user != null ? user.hashCode() : 0;
     }
 
+    @Override
+    public String toString() {
+        return "TNTUser{" +
+                "user=" + user +
+                ", key=" + key +
+                ", version='" + version + '\'' +
+                ", gameInfo='" + gameInfo + '\'' +
+                ", timeLogin=" + timeLogin +
+                ", lastTimePacket=" + lastTimePacket +
+                ", activeModules=" + activeModules +
+                ", forceBlock=" + forceBlock +
+                ", forceActive=" + forceActive +
+                ", donate=" + donate +
+                ", status=" + status +
+                ", fight=" + fight +
+                '}';
+    }
+
     public static void addUser(final TNTUser tntUser) {
         keyUserList.put(tntUser.key, tntUser);
         uuidUserList.put(tntUser.user, tntUser);
