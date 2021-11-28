@@ -51,6 +51,7 @@ public class TNTUser {
 
     public void heartBeat() {
         lastTimePacket = System.currentTimeMillis();
+        System.out.println(user + " " + activeModules);
     }
 
     public boolean isUserDead() {
