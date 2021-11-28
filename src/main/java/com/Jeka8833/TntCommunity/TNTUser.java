@@ -46,6 +46,7 @@ public class TNTUser {
             tntUser.timeLogin = System.currentTimeMillis();
             TNTClientDB.writeList.add(tntUser);
             Server.serverSend(socket, new BlockModulesPacket(tntUser.forceBlock, tntUser.forceActive));
+            TNTUser.addUser(tntUser);
         });
     }
 
