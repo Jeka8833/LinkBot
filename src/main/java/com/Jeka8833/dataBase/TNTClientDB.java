@@ -39,7 +39,7 @@ public class TNTClientDB {
                         final TNTUser user = iterator.next();
                         if (user.isUserDead())
                             iterator.remove();
-                        TNTUser.uuidUserList.remove(user.user);
+                        TNTUser.user2key.remove(user.user);
                     }
                 } catch (Exception e) {
                     logger.error("Clear old users", e);
@@ -57,7 +57,7 @@ public class TNTClientDB {
 
     public static void readAsync(final List<UUID> users, final UsersCallBack callBack) {
         for (UUID user : users) {
-            final TNTUser tntUser = TNTUser.uuidUserList.get(user);
+            final TNTUser tntUser = TNTUser.keyUserList.get(TNTUser.user2key.get(user));
             if (tntUser == null)
                 readList.add(user);
             else
@@ -66,7 +66,7 @@ public class TNTClientDB {
         callbackList.add(() -> {
             final List<TNTUser> outList = new ArrayList<>(users.size());
             for (UUID uuid : users)
-                outList.add(TNTUser.uuidUserList.getOrDefault(uuid, new TNTUser(uuid, UUID.randomUUID(), null)));
+                outList.add(TNTUser.keyUserList.getOrDefault(TNTUser.user2key.get(uuid), new TNTUser(uuid, UUID.randomUUID(), null)));
             callBack.call(outList);
         });
     }
@@ -85,16 +85,11 @@ public class TNTClientDB {
 
         try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery(sb.toString())) {
             while (resultSet.next()) {
-                for (UUID uuid : TNTUser.uuidUserList.keySet()){
-                    System.out.println(uuid);
-                }
-                System.out.println("Get uuid: " + resultSet.getObject("user", UUID.class));
+                final UUID user = resultSet.getObject("user", UUID.class);
 
-                TNTUser tntUser = TNTUser.keyUserList.get(resultSet.getObject("key", UUID.class));
-                if (tntUser == null) {
-                    tntUser = new TNTUser(resultSet.getObject("user", UUID.class),
-                            resultSet.getObject("key", UUID.class), resultSet.getString("version"));
-                }
+                final TNTUser tntUser = TNTUser.keyUserList.getOrDefault(TNTUser.user2key.get(user), new TNTUser(user,
+                        resultSet.getObject("key", UUID.class), resultSet.getString("version")));
+
                 final Date date = resultSet.getTimestamp("timeLogin");
                 tntUser.timeLogin = date == null ? System.currentTimeMillis() : date.getTime();
                 tntUser.forceBlock = resultSet.getLong("blockModules");

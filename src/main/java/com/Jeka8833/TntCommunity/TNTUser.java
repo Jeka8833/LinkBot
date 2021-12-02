@@ -52,7 +52,6 @@ public class TNTUser {
 
     public void heartBeat() {
         lastTimePacket = System.currentTimeMillis();
-        System.out.println(user + " " + activeModules);
     }
 
     public boolean isUserDead() {
@@ -95,11 +94,11 @@ public class TNTUser {
     }
 
     public static void addUser(final TNTUser tntUser) {
+        user2key.put(tntUser.user, tntUser.key);
         keyUserList.put(tntUser.key, tntUser);
-        uuidUserList.put(tntUser.user, tntUser);
         tntUser.heartBeat();
     }
 
     public static final Map<UUID, TNTUser> keyUserList = new HashMap<>();
-    public static final Map<UUID, TNTUser> uuidUserList = new HashMap<>();
+    public static final Map<UUID, UUID> user2key = new HashMap<>();
 }
