@@ -90,7 +90,7 @@ public class TNTClientDB {
                 }
                 System.out.println("Get uuid: " + resultSet.getObject("user", UUID.class));
 
-                TNTUser tntUser = TNTUser.uuidUserList.get(resultSet.getObject("user", UUID.class));
+                TNTUser tntUser = TNTUser.keyUserList.get(resultSet.getObject("key", UUID.class));
                 if (tntUser == null) {
                     tntUser = new TNTUser(resultSet.getObject("user", UUID.class),
                             resultSet.getObject("key", UUID.class), resultSet.getString("version"));
