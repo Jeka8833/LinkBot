@@ -85,17 +85,22 @@ public class TNTClientDB {
 
         try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery(sb.toString())) {
             while (resultSet.next()) {
-                final UUID user = resultSet.getObject("user", UUID.class);
-                final TNTUser userStats = TNTUser.uuidUserList.getOrDefault(user, new TNTUser(user,
-                        resultSet.getObject("key", UUID.class), resultSet.getString("version")));
-                System.out.println(TNTUser.uuidUserList.containsKey(user) + " " +
-                        (TNTUser.uuidUserList.containsKey(user) ? TNTUser.uuidUserList.get(user) : " - ") + " " + userStats);
+                for (UUID uuid : TNTUser.uuidUserList.keySet()){
+                    System.out.println(uuid);
+                }
+                System.out.println("Get uuid: " + resultSet.getObject("user", UUID.class));
+
+                TNTUser tntUser = TNTUser.uuidUserList.get(resultSet.getObject("user", UUID.class));
+                if (tntUser == null) {
+                    tntUser = new TNTUser(resultSet.getObject("user", UUID.class),
+                            resultSet.getObject("key", UUID.class), resultSet.getString("version"));
+                }
                 final Date date = resultSet.getTimestamp("timeLogin");
-                userStats.timeLogin = date == null ? System.currentTimeMillis() : date.getTime();
-                userStats.forceBlock = resultSet.getLong("blockModules");
-                userStats.donate = resultSet.getByte("donate");
-                userStats.status = resultSet.getByte("status");
-                TNTUser.addUser(userStats);
+                tntUser.timeLogin = date == null ? System.currentTimeMillis() : date.getTime();
+                tntUser.forceBlock = resultSet.getLong("blockModules");
+                tntUser.donate = resultSet.getByte("donate");
+                tntUser.status = resultSet.getByte("status");
+                TNTUser.addUser(tntUser);
             }
         }
 
