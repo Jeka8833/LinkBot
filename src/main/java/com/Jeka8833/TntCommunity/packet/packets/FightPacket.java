@@ -9,6 +9,7 @@ import org.java_websocket.WebSocket;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public class FightPacket implements Packet {
@@ -27,13 +28,14 @@ public class FightPacket implements Packet {
 
     @Override
     public void write(PacketOutputStream stream) throws IOException {
-        stream.writeByte(activeConnection.size());
-        for (WebSocket socket : activeConnection) {
-            final TNTUser user = TNTUser.keyUserList.get((UUID) socket.getAttachment());
-            if (user != null && user.fight > 0) {
-                stream.writeUUID(user.user);
-                stream.writeInt(user.fight);
-            }
+        final List<TNTUser> users = activeConnection.stream()
+                .map(webSocket -> TNTUser.keyUserList.get((UUID) webSocket.getAttachment()))
+                .filter(tntUser -> tntUser != null && tntUser.fight != 0).toList();
+
+        stream.writeByte(users.size());
+        for (TNTUser user : users) {
+            stream.writeUUID(user.user);
+            stream.writeInt(user.fight);
         }
     }
 
