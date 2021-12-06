@@ -58,4 +58,10 @@ public class DatabaseManager {
         db = new DatabaseManager(host, userName, password);
         db.connect();
     }
+
+    public static void initConnect(final String url) {
+        final String[] args = url.substring(11).split("[:@]", 3);
+        db = new DatabaseManager("jdbc:postgresql://" + args[2], args[0], args[1]);
+        db.connect();
+    }
 }

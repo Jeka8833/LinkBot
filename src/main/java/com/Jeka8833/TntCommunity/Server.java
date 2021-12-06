@@ -106,8 +106,6 @@ public class Server extends WebSocketServer {
 
     public static void main(String[] args) {
         try {
-            //DatabaseManager.initConnect(Util.getParam(args, "-db_url"), Util.getParam(args, "-db_user"),
-            //        Util.getParam(args, "-db_pass"));
             server = new Server(new InetSocketAddress(Integer.parseInt(Util.getParam(args, "-port"))));
             server.start();
             TNTClientDB.init();
