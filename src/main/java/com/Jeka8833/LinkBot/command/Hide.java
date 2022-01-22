@@ -8,7 +8,6 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Hide implements Command {
 
@@ -58,10 +57,11 @@ public class Hide implements Command {
                     sb.append("_Неделя ").append(week);
                     sb.append("_\n");
                     for (int day = 1; day <= 6; day++) {
-                        List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day).stream().filter(lesson -> lesson.choice && !user.isSkipLesson(lesson.lesson_id)).collect(Collectors.toList());
+                        List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day).stream()
+                                .filter(lesson -> lesson.choice && !user.isSkipLesson(lesson.lesson_id)).toList();
                         if (dayLesson.isEmpty())
                             continue;
-                        sb.append(Util.getDayName(day - 1)).append('\n');
+                        sb.append(Util.getDayName(day)).append('\n');
                         for (Lesson lesson : dayLesson) {
                             sb.append(lesson.lesson_id).append(" -> ").append(lesson.lesson_number).append(") ")
                                     .append(lesson.lesson_name).append(" `").append(lesson.lesson_type).append('`')
@@ -76,10 +76,11 @@ public class Hide implements Command {
                     sb.append("_Неделя ").append(week);
                     sb.append("_\n");
                     for (int day = 1; day <= 6; day++) {
-                        List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day).stream().filter(lesson -> user.isSkipLesson(lesson.lesson_id)).collect(Collectors.toList());
+                        List<Lesson> dayLesson = KPI.getDayLessons(week - 1, day).stream()
+                                .filter(lesson -> user.isSkipLesson(lesson.lesson_id)).toList();
                         if (dayLesson.isEmpty())
                             continue;
-                        sb.append(Util.getDayName(day - 1)).append('\n');
+                        sb.append(Util.getDayName(day)).append('\n');
                         for (Lesson lesson : dayLesson) {
                             sb.append(lesson.lesson_id).append(" -> ").append(lesson.lesson_number).append(") ")
                                     .append(lesson.lesson_name).append(" `").append(lesson.lesson_type).append('`')
