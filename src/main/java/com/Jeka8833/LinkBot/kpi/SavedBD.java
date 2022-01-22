@@ -291,7 +291,7 @@ public class SavedBD {
                      "time_start": "14:15:00",
                      "time_end": "15:50:00",
                      "online": true,
-                     "choice": false
+                     "choice": true
                  }, {
                      "lesson_id": 23,
                      "day_number": 2,
