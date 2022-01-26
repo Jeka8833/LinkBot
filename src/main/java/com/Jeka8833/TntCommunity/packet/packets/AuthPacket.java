@@ -1,10 +1,12 @@
 package com.Jeka8833.TntCommunity.packet.packets;
 
+import com.Jeka8833.TntCommunity.Server;
 import com.Jeka8833.TntCommunity.packet.Packet;
 import com.Jeka8833.TntCommunity.packet.PacketInputStream;
 import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
 import com.Jeka8833.TntCommunity.TNTUser;
 import com.Jeka8833.TntCommunity.util.Util;
+import com.Jeka8833.dataBase.TNTClientBDManager;
 import org.java_websocket.WebSocket;
 
 import java.io.IOException;
@@ -40,7 +42,19 @@ public class AuthPacket implements Packet {
             executor.execute(() -> {
                 if (Util.checkKey(this.user, key)) {
                     socket.setAttachment(key);
-                    TNTUser.login(socket, this.user, version);
+
+                    TNTClientBDManager.readOrCashUser(this.user, tntUser -> {
+                        if (tntUser == null) {
+                            socket.close(103, "BD Down");
+                        } else {
+                            tntUser.key = key;
+                            tntUser.version = version;
+                            tntUser.timeLogin = System.currentTimeMillis();
+                            TNTUser.addUser(tntUser);
+                            TNTClientBDManager.writeUser(this.user, null);
+                            Server.serverSend(socket, new BlockModulesPacket(tntUser.forceBlock, tntUser.forceActive));
+                        }
+                    });
                 } else {
                     socket.close(102, "Fail login, maybe Hypixel API down");
                 }

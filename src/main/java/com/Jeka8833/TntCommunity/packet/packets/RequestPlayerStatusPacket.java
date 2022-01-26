@@ -5,7 +5,7 @@ import com.Jeka8833.TntCommunity.TNTUser;
 import com.Jeka8833.TntCommunity.packet.Packet;
 import com.Jeka8833.TntCommunity.packet.PacketInputStream;
 import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
-import com.Jeka8833.dataBase.TNTClientDB;
+import com.Jeka8833.dataBase.TNTClientBDManager;
 import org.java_websocket.WebSocket;
 
 import java.io.IOException;
@@ -31,6 +31,7 @@ public class RequestPlayerStatusPacket implements Packet {
 
     @Override
     public void serverProcess(WebSocket socket, TNTUser user) {
-        TNTClientDB.readAsync(users, users1 -> Server.serverSend(socket, new SendPlayerStatusPacket(users1, user.donate > 50)));
+        TNTClientBDManager.readOrCashUser(users, tntUsers ->
+                Server.serverSend(socket, new SendPlayerStatusPacket(tntUsers, user.donate > 50)), true);
     }
 }

@@ -1,9 +1,5 @@
 package com.Jeka8833.TntCommunity;
 
-import com.Jeka8833.TntCommunity.packet.packets.BlockModulesPacket;
-import com.Jeka8833.dataBase.TNTClientDB;
-import org.java_websocket.WebSocket;
-
 import java.util.*;
 
 public class TNTUser {
@@ -14,7 +10,7 @@ public class TNTUser {
     public static final byte STATUS_OFFLINE = 0;
 
     public final UUID user;
-    public final UUID key;
+    public UUID key;
     public String version;
     public String gameInfo;
 
@@ -35,19 +31,6 @@ public class TNTUser {
         this.user = user;
         this.key = key;
         this.version = version;
-    }
-
-    public static void login(final WebSocket socket, final UUID user, final String version) {
-        TNTClientDB.readAsync(Collections.singletonList(user), users -> {
-            if (users.isEmpty())
-                throw new NullPointerException("Returned collection is empty");
-            final TNTUser tntUser = users.get(0);
-            tntUser.version = version;
-            tntUser.timeLogin = System.currentTimeMillis();
-            addUser(tntUser);
-            TNTClientDB.writeList.add(tntUser);
-            Server.serverSend(socket, new BlockModulesPacket(tntUser.forceBlock, tntUser.forceActive));
-        });
     }
 
     public void heartBeat() {

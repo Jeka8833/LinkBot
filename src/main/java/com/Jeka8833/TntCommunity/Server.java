@@ -6,7 +6,7 @@ import com.Jeka8833.TntCommunity.packet.PacketInputStream;
 import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
 import com.Jeka8833.TntCommunity.packet.packets.*;
 import com.Jeka8833.TntCommunity.util.BiMap;
-import com.Jeka8833.dataBase.TNTClientDB;
+import com.Jeka8833.dataBase.TNTClientBDManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;
@@ -15,7 +15,6 @@ import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.sql.SQLException;
 import java.util.UUID;
 
 
@@ -46,12 +45,10 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-
     }
 
     @Override
@@ -61,14 +58,14 @@ public class Server extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
         try (final PacketInputStream stream = new PacketInputStream(message)) {
-            final TNTUser user = TNTUser.keyUserList.get((UUID) conn.getAttachment());
+            final UUID key = conn.getAttachment();
+            final TNTUser user = TNTUser.keyUserList.get(key);
             if (user == null && !(stream.packet instanceof AuthPacket)) {
                 conn.close();
             } else {
                 stream.packet.read(stream);
                 stream.packet.serverProcess(conn, user);
-                if (user != null)
-                    user.heartBeat();
+                if (user != null) user.heartBeat();
             }
         } catch (Exception e) {
             logger.error("Fail parse packet", e);
@@ -106,18 +103,15 @@ public class Server extends WebSocketServer {
 
     public static void main(String[] args) {
         try {
+            //DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
             server = new Server(new InetSocketAddress(Integer.parseInt(Util.getParam(args, "-port"))));
             server.start();
-            TNTClientDB.init();
+            TNTClientBDManager.init();
         } finally {
-            TNTUser.keyUserList.values().stream()
+            TNTClientBDManager.writeUsers(TNTUser.keyUserList.values().stream()
                     .filter(tntUser -> tntUser.key != null && tntUser.version != null)
-                    .forEach(TNTClientDB.writeList::add);
-            try {
-                TNTClientDB.writeUser();
-            } catch (SQLException e) {
-                logger.error("Fail write users:", e);
-            }
+                    .map(tntUser -> tntUser.user).toList(), null);
+            TNTClientBDManager.forceWrite();
         }
     }
 }
