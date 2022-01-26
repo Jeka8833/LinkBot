@@ -49,16 +49,13 @@ public class AuthPacket implements Packet {
                     socket.setAttachment(key);
 
                     TNTClientBDManager.readOrCashUser(this.user, tntUser -> {
-                        if (tntUser == null) {
-                            socket.close(103, "BD Down");
-                        } else {
-                            tntUser.key = key;
-                            tntUser.version = version;
-                            tntUser.timeLogin = System.currentTimeMillis();
-                            TNTUser.addUser(tntUser);
-                            TNTClientBDManager.writeUser(this.user, null);
-                            Server.serverSend(socket, new BlockModulesPacket(tntUser.forceBlock, tntUser.forceActive));
-                        }
+                        final TNTUser account = tntUser == null ? new TNTUser(this.user, this.key, this.version) : tntUser;
+                        account.key = key;
+                        account.version = version;
+                        account.timeLogin = System.currentTimeMillis();
+                        TNTUser.addUser(account);
+                        TNTClientBDManager.writeUser(this.user, null);
+                        Server.serverSend(socket, new BlockModulesPacket(account.forceBlock, account.forceActive));
                     });
                 } else {
                     socket.close(102, "Fail login, maybe Hypixel API down");

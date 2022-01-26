@@ -108,16 +108,19 @@ public class TNTClientBDManager {
             else
                 needRequest.add(uuid);
         }
-
-        readUsers(needRequest, tntUsers -> {
-            returnUsers.addAll(tntUsers);
+        if (needRequest.isEmpty()) {
             callbackList.update(returnUsers);
-        }, fillDefault);
+        } else {
+            readUsers(needRequest, tntUsers -> {
+                returnUsers.addAll(tntUsers);
+                callbackList.update(returnUsers);
+            }, fillDefault);
+        }
     }
 
     private static void read(final List<UserQuire> userList) throws SQLException {
         DatabaseManager.db.checkConnect();
-        final StringBuilder sb = new StringBuilder("SELECT * FROM \"TC_Users\" WHERE \"user\" IN (");
+        final StringBuilder sb = new StringBuilder("SELECT * FROM \"TC_Players\" WHERE \"user\" IN (");
         for (UserQuire quire : userList)
             sb.append("'").append(quire.user).append("',");
         sb.delete(sb.length() - 1, sb.length()).append(")");
@@ -153,7 +156,7 @@ public class TNTClientBDManager {
 
     private static void write(final List<UserQuire> userList) throws SQLException {
         DatabaseManager.db.checkConnect();
-        final StringBuilder sb = new StringBuilder("INSERT INTO \"TC_Users\" (\"user\", \"key\", \"version\", " +
+        final StringBuilder sb = new StringBuilder("INSERT INTO \"TC_Players\" (\"user\", \"key\", \"version\", " +
                 "\"timeLogin\", \"blockModules\", \"donate\", \"status\") VALUES ");
         for (UserQuire quire : userList) {
             final TNTUser user = TNTUser.keyUserList.get(TNTUser.user2key.get(quire.user));
@@ -166,7 +169,7 @@ public class TNTClientBDManager {
                     .append(user.status).append("),");
         }
         sb.delete(sb.length() - 1, sb.length())
-                .append(" ON CONFLICT (\"user\", \"key\") DO UPDATE SET \"key\" = EXCLUDED.\"key\", " +
+                .append(" ON CONFLICT (\"user\") DO UPDATE SET \"key\" = EXCLUDED.\"key\", " +
                         "\"version\" = EXCLUDED.\"version\", \"timeLogin\" = EXCLUDED.\"timeLogin\", " +
                         "\"blockModules\" = EXCLUDED.\"blockModules\", \"donate\" = EXCLUDED.\"donate\", " +
                         "\"status\" = EXCLUDED.\"status\"");
