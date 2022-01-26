@@ -38,7 +38,7 @@ public class TNTUser {
     }
 
     public boolean isUserDead() {
-        return System.currentTimeMillis() - lastTimePacket > 30_000;
+        return System.currentTimeMillis() - lastTimePacket > 60_000;
     }
 
     public boolean isClient() {
@@ -80,6 +80,12 @@ public class TNTUser {
         user2key.put(tntUser.user, tntUser.key);
         keyUserList.put(tntUser.key, tntUser);
         tntUser.heartBeat();
+    }
+
+    public static void removeUser(final UUID key) {
+        final TNTUser user = TNTUser.keyUserList.remove(key);
+        if (user != null)
+            TNTUser.user2key.remove(user.user);
     }
 
     public static final Map<UUID, TNTUser> keyUserList = new HashMap<>();

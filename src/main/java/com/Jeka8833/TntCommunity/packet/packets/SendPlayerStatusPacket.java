@@ -26,7 +26,6 @@ public record SendPlayerStatusPacket(List<TNTUser> users, boolean isAdmin) imple
                 });
                 final long isDJFix = user.activeModules & 64L;
                 stream.writeLong(isAdmin ? user.activeModules : isDJFix);
-                System.out.println(isDJFix + " " + user.activeModules + " " + (user.activeModules & 64L));
                 stream.writeUTF(user.version);
                 stream.writeUTF((isAdmin || user.status > 1) ? user.gameInfo : "");
             }

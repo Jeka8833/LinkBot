@@ -6,6 +6,7 @@ import com.Jeka8833.TntCommunity.packet.PacketInputStream;
 import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
 import com.Jeka8833.TntCommunity.packet.packets.*;
 import com.Jeka8833.TntCommunity.util.BiMap;
+import com.Jeka8833.dataBase.DatabaseManager;
 import com.Jeka8833.dataBase.TNTClientBDManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,7 +104,7 @@ public class Server extends WebSocketServer {
 
     public static void main(String[] args) {
         try {
-            //DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
+            DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
             server = new Server(new InetSocketAddress(Integer.parseInt(Util.getParam(args, "-port"))));
             server.start();
             TNTClientBDManager.init();

@@ -39,6 +39,11 @@ public class AuthPacket implements Packet {
         if (executor.getQueue().size() == executor.getMaximumPoolSize()) {
             socket.close(101, "Auth server is overloading");
         } else {
+            if (TNTUser.keyUserList.containsKey(key)) {
+                final UUID realUUID = TNTUser.keyUserList.get(key).user;
+                TNTUser.removeUser(realUUID);
+            }
+
             executor.execute(() -> {
                 if (Util.checkKey(this.user, key)) {
                     socket.setAttachment(key);

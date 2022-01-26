@@ -1,5 +1,6 @@
 package com.Jeka8833.dataBase;
 
+import com.Jeka8833.TntCommunity.Server;
 import com.Jeka8833.TntCommunity.TNTUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,14 +22,33 @@ public class TNTClientBDManager {
     public static void init() {
         final Thread thread = new Thread(() -> {
             while (true) {
-                forceWrite();
-                forceRead();
-
-                users.values().removeIf(userQuire -> !userQuire.isNeed());
                 try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    logger.error("Fail sleep... -_-", e);
+                    if (Server.server != null && Server.server.getConnections() != null)
+                        logger.info("Current online: " + Server.server.getConnections().size());
+
+
+                    forceWrite();
+                    forceRead();
+
+
+                    final Iterator<TNTUser> userIterator = TNTUser.keyUserList.values().iterator();
+                    while (userIterator.hasNext()) {
+                        final TNTUser tntUser = userIterator.next();
+                        if (tntUser.isUserDead()) {
+                            userIterator.remove();
+                            TNTUser.user2key.remove(tntUser.user);
+                        }
+                    }
+
+                    users.values().removeIf(userQuire -> !userQuire.isNeed());
+
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        logger.error("Fail sleep... -_-", e);
+                    }
+                } catch (Exception e) {
+                    logger.warn("BD error: ", e);
                 }
             }
         });
