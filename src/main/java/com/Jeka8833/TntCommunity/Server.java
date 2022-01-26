@@ -104,7 +104,7 @@ public class Server extends WebSocketServer {
 
     public static void main(String[] args) {
         try {
-            DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
+            //DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
             server = new Server(new InetSocketAddress(Integer.parseInt(Util.getParam(args, "-port"))));
             server.start();
             TNTClientBDManager.init();
