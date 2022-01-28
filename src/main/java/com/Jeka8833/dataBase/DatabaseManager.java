@@ -1,11 +1,16 @@
 package com.Jeka8833.dataBase;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseManager {
+
+    private static final Logger LOGGER = LogManager.getLogger(LinkBotDB.class);
 
     private Connection connection;
     public Statement statement;
@@ -25,13 +30,13 @@ public class DatabaseManager {
             connection = DriverManager.getConnection(host, userName, password);
             statement = connection.createStatement();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Fail connect to DB:", e);
         }
     }
 
     public void checkConnect() {
         try {
-            if (!connection.isValid(1)) {
+            if (!connection.isValid(5)) { // Timeout 5 second
                 close();
                 connect();
             }
@@ -48,18 +53,16 @@ public class DatabaseManager {
             if (statement != null)
                 statement.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("Fail close to DB:", e);
+
         }
     }
 
     public static DatabaseManager db;
 
-    public static void initConnect(final String host, final String userName, final String password) {
-        db = new DatabaseManager(host, userName, password);
-        db.connect();
-    }
-
     public static void initConnect(final String url) {
+        if (db != null) return; // Re-init protection
+
         final String[] args = url.substring(11).split("[:@]", 3);
         db = new DatabaseManager("jdbc:postgresql://" + args[2], args[0], args[1]);
         db.connect();

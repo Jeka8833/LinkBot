@@ -11,20 +11,14 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
 
-    public static final Gson gson = new Gson();
+    public static final Gson GSON = new Gson();
 
     public static void main(String[] args) throws TelegramApiException {
         DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
         KPI.init();
         LinkBotDB.read();
         Server.main(args);
-        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        var botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(new BotSetup(Util.getParam(args, "-name"), Util.getParam(args, "-token")));
-        System.out.println("All user which enable notification:");
-        for (User user : LinkBotDB.users) {
-            if (user.notification == 0)
-                continue;
-            System.out.println(user.chatId + " - " + user.notification);
-        }
     }
 }

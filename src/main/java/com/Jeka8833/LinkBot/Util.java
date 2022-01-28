@@ -1,43 +1,27 @@
 package com.Jeka8833.LinkBot;
 
 import com.Jeka8833.dataBase.LinkBotDB;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
 public class Util {
+    private static final Logger LOGGER = LogManager.getLogger(LinkBotDB.class);
 
-    private static final String[] dayName = {"*Воскресенье:*", "*Понедельник:*", "*Вторник:*", "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
-
-    public static String readInputStream(final InputStream inputStream) {
-        try (final ByteArrayOutputStream result = new ByteArrayOutputStream()) {
-            final byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
-                result.write(buffer, 0, length);
-            }
-            return result.toString(StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        throw new NullPointerException("Fail read InputStream");
-    }
+    private static final String[] DAY_NAME = {"*Воскресенье:*", "*Понедельник:*", "*Вторник:*",
+            "*Среда:*", "*Четверг:*", "*Пятница:*", "*Суббота:*"};
 
     public static void sendMessage(final TelegramLongPollingBot bot, final String chatId, final String text) {
-        final SendMessage message = new SendMessage();
+        var message = new SendMessage();
         message.setChatId(chatId);
         message.enableMarkdown(true);
         message.setText(text);
         try {
             bot.execute(message);
         } catch (TelegramApiException e) {
-            System.out.println("User error: " + chatId);
-            e.printStackTrace();
+            LOGGER.warn("Fail send message:", e);
         }
     }
 
@@ -97,6 +81,6 @@ public class Util {
     }
 
     public static String getDayName(final int day) {
-        return dayName[day];
+        return DAY_NAME[day];
     }
 }

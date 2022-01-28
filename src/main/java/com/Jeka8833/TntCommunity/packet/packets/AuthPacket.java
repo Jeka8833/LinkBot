@@ -1,10 +1,10 @@
 package com.Jeka8833.TntCommunity.packet.packets;
 
 import com.Jeka8833.TntCommunity.Server;
+import com.Jeka8833.TntCommunity.TNTUser;
 import com.Jeka8833.TntCommunity.packet.Packet;
 import com.Jeka8833.TntCommunity.packet.PacketInputStream;
 import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
-import com.Jeka8833.TntCommunity.TNTUser;
 import com.Jeka8833.TntCommunity.util.Util;
 import com.Jeka8833.dataBase.TNTClientBDManager;
 import org.java_websocket.WebSocket;

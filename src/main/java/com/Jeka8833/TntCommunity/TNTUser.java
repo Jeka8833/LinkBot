@@ -1,6 +1,9 @@
 package com.Jeka8833.TntCommunity;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 public class TNTUser {
 

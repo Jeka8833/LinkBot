@@ -46,10 +46,12 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        logger.info("Current online: " + Server.server.getConnections().size());
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        logger.info("Current online: " + Server.server.getConnections().size());
     }
 
     @Override
@@ -104,7 +106,7 @@ public class Server extends WebSocketServer {
 
     public static void main(String[] args) {
         try {
-            //DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
+            DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
             server = new Server(new InetSocketAddress(Integer.parseInt(Util.getParam(args, "-port"))));
             server.start();
             TNTClientBDManager.init();

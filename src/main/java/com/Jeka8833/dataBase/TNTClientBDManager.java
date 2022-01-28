@@ -1,6 +1,5 @@
 package com.Jeka8833.dataBase;
 
-import com.Jeka8833.TntCommunity.Server;
 import com.Jeka8833.TntCommunity.TNTUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,62 +11,49 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TNTClientBDManager {
-    private static final Logger logger = LogManager.getLogger(TNTClientBDManager.class);
-    private static final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static final Map<UUID, UserQuire> users = new HashMap<>();
+
+    private static final Logger LOGGER = LogManager.getLogger(TNTClientBDManager.class);
+    private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
+    private static final DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private static final Map<UUID, UserQuire> USERS = new HashMap<>();
 
     public static void init() {
-        final Thread thread = new Thread(() -> {
-            while (true) {
-                try {
-                    if (Server.server != null && Server.server.getConnections() != null)
-                        logger.info("Current online: " + Server.server.getConnections().size());
+        EXECUTOR.scheduleWithFixedDelay(() -> {
+            forceWrite();
+            forceRead();
 
-
-                    forceWrite();
-                    forceRead();
-
-
-                    final Iterator<TNTUser> userIterator = TNTUser.keyUserList.values().iterator();
-                    while (userIterator.hasNext()) {
-                        final TNTUser tntUser = userIterator.next();
-                        if (tntUser.isUserDead()) {
-                            userIterator.remove();
-                            TNTUser.user2key.remove(tntUser.user);
-                        }
-                    }
-
-                    users.values().removeIf(userQuire -> !userQuire.isNeed());
-
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        logger.error("Fail sleep... -_-", e);
-                    }
-                } catch (Exception e) {
-                    logger.warn("BD error: ", e);
+            final Iterator<TNTUser> userIterator = TNTUser.keyUserList.values().iterator();
+            while (userIterator.hasNext()) {
+                final TNTUser tntUser = userIterator.next();
+                if (tntUser.isUserDead()) {
+                    userIterator.remove();
+                    TNTUser.user2key.remove(tntUser.user);
                 }
             }
-        });
-        thread.setDaemon(true);
-        thread.start();
+
+            USERS.values().removeIf(userQuire -> !userQuire.isNeed());
+        }, 0, 5, TimeUnit.SECONDS);
     }
 
     public static void forceRead() {
-        final List<UserQuire> needRead = users.values().stream().filter(UserQuire::isRead).toList();
+        final List<UserQuire> needRead = USERS.values().stream().filter(UserQuire::isRead).toList();
         if (!needRead.isEmpty()) {
             try {
                 read(needRead);
             } catch (Exception e) {
-                logger.warn("Block read error, transition to single read method");
+                LOGGER.warn("Block read error, transition to single read method");
                 for (UserQuire quire : needRead) {
                     try {
                         read(Collections.singletonList(quire));
                     } catch (SQLException ex) {
-                        logger.warn("User Read Error: " + quire.user + ", error: ", ex);
+                        LOGGER.warn("User Read Error: " + quire.user + ", error: ", ex);
                     }
                 }
             }
@@ -75,17 +61,17 @@ public class TNTClientBDManager {
     }
 
     public static void forceWrite() {
-        final List<UserQuire> needWrite = users.values().stream().filter(UserQuire::isWrite).toList();
+        final List<UserQuire> needWrite = USERS.values().stream().filter(UserQuire::isWrite).toList();
         if (!needWrite.isEmpty()) {
             try {
                 write(needWrite);
             } catch (Exception e) {
-                logger.warn("Block write error, transition to single write method");
+                LOGGER.warn("Block write error, transition to single write method");
                 for (UserQuire quire : needWrite) {
                     try {
                         write(Collections.singletonList(quire));
                     } catch (SQLException ex) {
-                        logger.warn("User Write Error: " + quire.user + ", error: ", ex);
+                        LOGGER.warn("User Write Error: " + quire.user + ", error: ", ex);
                     }
                 }
             }
@@ -119,16 +105,18 @@ public class TNTClientBDManager {
     }
 
     private static void read(final List<UserQuire> userList) throws SQLException {
-        DatabaseManager.db.checkConnect();
-        final StringBuilder sb = new StringBuilder("SELECT * FROM \"TC_Players\" WHERE \"user\" IN (");
-        for (UserQuire quire : userList)
-            sb.append("'").append(quire.user).append("',");
-        sb.delete(sb.length() - 1, sb.length()).append(")");
+        if (userList == null || userList.isEmpty()) return;
 
-        try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery(sb.toString())) {
+        var joiner = new StringJoiner("','",
+                "SELECT * FROM \"TC_Players\" WHERE \"user\" IN ('", "')");
+        for (UserQuire quire : userList)
+            joiner.add(quire.user.toString());
+
+        DatabaseManager.db.checkConnect();
+        try (ResultSet resultSet = DatabaseManager.db.statement.executeQuery(joiner.toString())) { // Throw force exit
             try {
                 while (resultSet.next()) {
-                    final TNTUser tntUser = new TNTUser(resultSet.getObject("user", UUID.class),
+                    var tntUser = new TNTUser(resultSet.getObject("user", UUID.class),
                             resultSet.getObject("key", UUID.class), resultSet.getString("version"));
 
                     final Date date = resultSet.getTimestamp("timeLogin");
@@ -146,7 +134,7 @@ public class TNTClientBDManager {
                     }
                 }
             } catch (Exception e) {
-                logger.warn("Fail read data");
+                LOGGER.warn("Fail read data");
             }
         }
 
@@ -155,27 +143,23 @@ public class TNTClientBDManager {
     }
 
     private static void write(final List<UserQuire> userList) throws SQLException {
-        DatabaseManager.db.checkConnect();
-        final StringBuilder sb = new StringBuilder("INSERT INTO \"TC_Players\" (\"user\", \"key\", \"version\", " +
-                "\"timeLogin\", \"blockModules\", \"donate\", \"status\") VALUES ");
-        for (UserQuire quire : userList) {
-            final TNTUser user = TNTUser.keyUserList.get(TNTUser.user2key.get(quire.user));
-            sb.append("('").append(user.user)
-                    .append("','").append(user.key).append("','")
-                    .append(user.version).append("','")
-                    .append(formatter.format(new Date(user.timeLogin))).append("',")
-                    .append(user.forceBlock).append(",")
-                    .append(user.donate).append(",")
-                    .append(user.status).append("),");
-        }
-        sb.delete(sb.length() - 1, sb.length())
-                .append(" ON CONFLICT (\"user\") DO UPDATE SET \"key\" = EXCLUDED.\"key\", " +
+        if (userList == null || userList.isEmpty()) return;
+
+        var sqlRequest = new StringJoiner(",", "INSERT INTO \"TC_Players\" (\"user\", \"key\", " +
+                "\"version\", \"timeLogin\", \"blockModules\", \"donate\", \"status\") VALUES ",
+                " ON CONFLICT (\"user\") DO UPDATE SET \"key\" = EXCLUDED.\"key\", " +
                         "\"version\" = EXCLUDED.\"version\", \"timeLogin\" = EXCLUDED.\"timeLogin\", " +
                         "\"blockModules\" = EXCLUDED.\"blockModules\", \"donate\" = EXCLUDED.\"donate\", " +
                         "\"status\" = EXCLUDED.\"status\"");
+        for (UserQuire quire : userList) {
+            final TNTUser user = TNTUser.keyUserList.get(TNTUser.user2key.get(quire.user));
+            sqlRequest.add("('" + user.user + "','" + user.key + "','" + user.version + "','"
+                    + FORMATTER.format(new Date(user.timeLogin)) + "'," + user.forceBlock
+                    + "," + user.donate + "," + user.status + ")");
+        }
 
-        DatabaseManager.db.statement.executeUpdate(sb.toString()); // Throw
-
+        DatabaseManager.db.checkConnect();
+        DatabaseManager.db.statement.executeUpdate(sqlRequest.toString()); // Throw force exit
 
         for (UserQuire quire : userList)
             quire.callWrite(TNTUser.keyUserList.get(TNTUser.user2key.get(quire.user)));
@@ -186,7 +170,8 @@ public class TNTClientBDManager {
      */
     public static void readUsers(final List<UUID> users, final UsersCallback callbackList, final boolean fillDefault) {
         if (callbackList == null) {
-            for (UUID uuid : users) readUser(uuid, null);
+            for (UUID uuid : users)
+                readUser(uuid, null);
         } else {
             final AtomicInteger readCount = new AtomicInteger();
             final List<TNTUser> returnUsers = new ArrayList<>(users.size());
@@ -211,7 +196,8 @@ public class TNTClientBDManager {
      */
     public static void writeUsers(final List<UUID> users, final UsersCallback callbackList) {
         if (callbackList == null) {
-            for (UUID uuid : users) writeUser(uuid, null);
+            for (UUID uuid : users)
+                writeUser(uuid, null);
         } else {
             final AtomicInteger readCount = new AtomicInteger();
             final List<TNTUser> returnUsers = new ArrayList<>(users.size());
@@ -232,22 +218,20 @@ public class TNTClientBDManager {
      * @param callback Will return null in callback if the database response has timed out or other circumstances.
      */
     public static void readUser(final UUID uuid, final UserCallback callback) {
-        final UserQuire quire = users.getOrDefault(uuid, new UserQuire(uuid));
+        final UserQuire quire = USERS.getOrDefault(uuid, new UserQuire(uuid));
         quire.needRead();
-        if (callback != null)
-            quire.addReadCallback(callback);
-        users.put(quire.user, quire);
+        if (callback != null) quire.addReadCallback(callback);
+        USERS.put(quire.user, quire);
     }
 
     /**
      * @param callback Will return null in callback if the database response has timed out or other circumstances.
      */
     public static void writeUser(final UUID uuid, final UserCallback callback) {
-        final UserQuire quire = users.getOrDefault(uuid, new UserQuire(uuid));
+        final UserQuire quire = USERS.getOrDefault(uuid, new UserQuire(uuid));
         quire.needWrite();
-        if (callback != null)
-            quire.addWriteCallback(callback);
-        users.put(quire.user, quire);
+        if (callback != null) quire.addWriteCallback(callback);
+        USERS.put(quire.user, quire);
     }
 
     private static class UserQuire {
@@ -265,7 +249,8 @@ public class TNTClientBDManager {
 
         public boolean isNeed() {
             if (timeout < System.currentTimeMillis()) {
-                logger.warn("Timeout get or read information for user: " + user);
+                LOGGER.warn("Timeout get or read information for user: " + user);
+
                 callRead(null);
                 callWrite(null);
                 return false;
