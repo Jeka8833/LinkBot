@@ -69,7 +69,7 @@ public class SavedBD {
                      "lesson_class": "310-12",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 6,
@@ -82,7 +82,7 @@ public class SavedBD {
                      "lesson_class": "114-12",
                      "time_start": "14:15:00",
                      "time_end": "15:50:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 7,
@@ -160,7 +160,7 @@ public class SavedBD {
                      "lesson_class": "312-02",
                      "time_start": "08:30:00",
                      "time_end": "10:05:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 13,
@@ -173,7 +173,7 @@ public class SavedBD {
                      "lesson_class": "200-12",
                      "time_start": "10:25:00",
                      "time_end": "12:00:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 14,
@@ -186,7 +186,7 @@ public class SavedBD {
                      "lesson_class": "-",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": true
                  }, {
                      "lesson_id": 15,
@@ -199,7 +199,7 @@ public class SavedBD {
                      "lesson_class": "-",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": true
                  }, {
                      "lesson_id": 16,
@@ -212,7 +212,7 @@ public class SavedBD {
                      "lesson_class": "-",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": true
                  }, {
                      "lesson_id": 17,
@@ -303,7 +303,7 @@ public class SavedBD {
                      "lesson_class": "134-12",
                      "time_start": "10:25:00",
                      "time_end": "12:00:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 24,
@@ -316,7 +316,7 @@ public class SavedBD {
                      "lesson_class": "139-12",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 25,
@@ -329,7 +329,7 @@ public class SavedBD {
                      "lesson_class": "310-12",
                      "time_start": "14:15:00",
                      "time_end": "15:50:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 26,
@@ -342,7 +342,7 @@ public class SavedBD {
                      "lesson_class": "134-12",
                      "time_start": "10:25:00",
                      "time_end": "12:00:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 27,
@@ -355,7 +355,7 @@ public class SavedBD {
                      "lesson_class": "129-12",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 28,
@@ -420,7 +420,7 @@ public class SavedBD {
                      "lesson_class": "312-02",
                      "time_start": "08:30:00",
                      "time_end": "10:05:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 33,
@@ -433,7 +433,7 @@ public class SavedBD {
                      "lesson_class": "200-12",
                      "time_start": "10:25:00",
                      "time_end": "12:00:00",
-                     "online": false,
+                     "online": true,
                      "choice": false
                  }, {
                      "lesson_id": 34,
@@ -446,7 +446,7 @@ public class SavedBD {
                      "lesson_class": "-",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": true
                  }, {
                      "lesson_id": 35,
@@ -459,7 +459,7 @@ public class SavedBD {
                      "lesson_class": "-",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": true
                  }, {
                      "lesson_id": 36,
@@ -472,7 +472,7 @@ public class SavedBD {
                      "lesson_class": "-",
                      "time_start": "12:20:00",
                      "time_end": "13:55:00",
-                     "online": false,
+                     "online": true,
                      "choice": true
                  }
              ]""";
