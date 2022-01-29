@@ -11,35 +11,42 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TNTClientBDManager {
 
     private static final Logger LOGGER = LogManager.getLogger(TNTClientBDManager.class);
-    private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
     private static final DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private static final Map<UUID, UserQuire> USERS = new HashMap<>();
 
     public static void init() {
-        EXECUTOR.scheduleWithFixedDelay(() -> {
-            forceWrite();
-            forceRead();
+        // scheduleWithFixedDelay crashes
+        var infinityThread = new Thread(() -> {
+            while (true) {
+                try {
+                    forceWrite();
+                    forceRead();
 
-            final Iterator<TNTUser> userIterator = TNTUser.keyUserList.values().iterator();
-            while (userIterator.hasNext()) {
-                final TNTUser tntUser = userIterator.next();
-                if (tntUser.isUserDead()) {
-                    userIterator.remove();
-                    TNTUser.user2key.remove(tntUser.user);
+                    final Iterator<TNTUser> userIterator = TNTUser.keyUserList.values().iterator();
+                    while (userIterator.hasNext()) {
+                        final TNTUser tntUser = userIterator.next();
+                        if (tntUser.isUserDead()) {
+                            userIterator.remove();
+                            TNTUser.user2key.remove(tntUser.user);
+                        }
+                    }
+
+                    USERS.values().removeIf(userQuire -> !userQuire.isNeed());
+
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                    LOGGER.warn("DB Tick error:", e);
                 }
             }
-
-            USERS.values().removeIf(userQuire -> !userQuire.isNeed());
-        }, 0, 5, TimeUnit.SECONDS);
+        });
+        infinityThread.setDaemon(true);
+        infinityThread.start();
     }
 
     public static void forceRead() {
