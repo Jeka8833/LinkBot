@@ -4,12 +4,16 @@ import com.Jeka8833.LinkBot.command.*;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
 import com.Jeka8833.dataBase.LinkBotDB;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.*;
 
 public class BotSetup extends TelegramLongPollingBot {
+
+    private static final Logger LOGGER = LogManager.getLogger(BotSetup.class);
 
     private final Time table;
 
@@ -91,7 +95,8 @@ public class BotSetup extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             final long chatId = update.getMessage().getChatId();
             final String messageText = update.getMessage().getText();
-            System.out.println(update.getMessage().getFrom().getFirstName() + " " + chatId + " -> " + messageText);
+            LOGGER.info(update.getMessage().getFrom().getUserName() + " " + update.getMessage().getFrom().getFirstName()
+                    + " " + update.getMessage().getFrom().getLastName() + " " + chatId + " -> " + messageText);
             final String[] arg = messageText.split(" ", 2);
             if (commandMap.containsKey(arg[0].toLowerCase()))
                 commandMap.get(arg[0].toLowerCase()).receiveListener(update, arg.length > 1 ? arg[1] : "");
