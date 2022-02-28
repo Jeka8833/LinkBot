@@ -1,6 +1,8 @@
 package com.Jeka8833.HelloSite;
 
 import com.Jeka8833.LinkBot.Util;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -9,8 +11,13 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Site {
+    private static final Logger LOGGER = LogManager.getLogger(Site.class);
+    private static final AtomicInteger tickCount = new AtomicInteger();
+    private static volatile long nextTime = 0;
+
 
     private final int threadCount;
     private final ExecutorService executorService;
@@ -37,7 +44,10 @@ public class Site {
                 return null;
             }
         }).filter(Objects::nonNull).toArray(URL[]::new);
-
+        LOGGER.info("Sites:");
+        for (URL url : sites) {
+            LOGGER.info(url);
+        }
         new Site(Integer.parseInt(Util.getParam(args, "-threads")), sites).start();
     }
 
@@ -57,6 +67,11 @@ public class Site {
                             connection.getInputStream() : connection.getErrorStream()).readAllBytes();     //Block thread
                 } catch (Exception ignored) {
                 }
+                if (nextTime < System.currentTimeMillis()) {
+                    nextTime = System.currentTimeMillis() + 30 * 60 * 1000; // 30 Minutes
+                    LOGGER.info("Ticks: " + tickCount.get());
+                }
+                tickCount.incrementAndGet();
             }
         }
     }
