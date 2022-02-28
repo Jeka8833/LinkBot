@@ -1,5 +1,6 @@
 package com.Jeka8833.LinkBot;
 
+import com.Jeka8833.HelloSite.Site;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.TntCommunity.Server;
 import com.Jeka8833.dataBase.DatabaseManager;
@@ -18,6 +19,7 @@ public class Main {
         KPI.init();
         LinkBotDB.read();
         Server.main(args);
+        Site.main(args);
         var botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(new BotSetup(Util.getParam(args, "-name"), Util.getParam(args, "-token")));
     }
