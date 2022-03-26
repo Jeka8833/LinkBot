@@ -19,7 +19,7 @@ public class Main {
         //KPI.init();
         //LinkBotDB.read();
         Server.main(args);
-        Site.main(args);
+        //Site.main(args);
         //var botsApi = new TelegramBotsApi(DefaultBotSession.class);
         //botsApi.registerBot(new BotSetup(Util.getParam(args, "-name"), Util.getParam(args, "-token")));
     }
