@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.Jeka8833'
-version '1.0.6.2'
+version '1.1.1'
 compileJava.options.encoding = 'UTF-8'
 
 task stage(type: Copy) {
@@ -36,5 +36,5 @@ dependencies {
 }
 
 wrapper {
-    gradleVersion = '7.2'
+    gradleVersion = '7.4.2'
 }
