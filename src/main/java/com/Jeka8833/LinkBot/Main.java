@@ -15,12 +15,12 @@ public class Main {
     public static final Gson GSON = new Gson();
 
     public static void main(String[] args) throws TelegramApiException {
-        DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
-        KPI.init();
-        LinkBotDB.read();
+        //DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
+        //KPI.init();
+        //LinkBotDB.read();
         Server.main(args);
         //Site.main(args);
-        var botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        botsApi.registerBot(new BotSetup(Util.getParam(args, "-name"), Util.getParam(args, "-token")));
+        //var botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        //botsApi.registerBot(new BotSetup(Util.getParam(args, "-name"), Util.getParam(args, "-token")));
     }
 }

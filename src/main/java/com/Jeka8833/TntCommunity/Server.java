@@ -11,7 +11,6 @@ import com.Jeka8833.dataBase.TNTClientBDManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;
-import org.java_websocket.exceptions.InvalidFrameException;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
@@ -78,10 +77,7 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        if (ex instanceof InvalidFrameException)
-            logger.warn("Crash frame InvalidFrameException");
-        else
-            logger.error("Server have a error:", ex);
+        logger.error("Server have a error:", ex);
     }
 
     @Override
