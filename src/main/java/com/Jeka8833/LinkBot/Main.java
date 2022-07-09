@@ -15,6 +15,7 @@ public class Main {
     public static final Gson GSON = new Gson();
 
     public static void main(String[] args) throws TelegramApiException {
+        // Trigger heroku push
         //DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
         //KPI.init();
         //LinkBotDB.read();
