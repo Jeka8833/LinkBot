@@ -25,6 +25,8 @@ public class Util {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200)
                 return Main.GSON.fromJson(response.body(), Util.ParseUser.class).record.owner.equals(user);
+            else
+                logger.warn("User not valid test: " + "https://api.hypixel.net/key?key=" + key);
         } catch (Exception ex) {
             logger.warn("Hypixel API is down", ex);
         }
