@@ -22,9 +22,18 @@ public class AuthPacket implements Packet {
     public UUID key;
     public String version;
 
+    private final int closeCode;
+    private final String closeMessage;
+
+    public AuthPacket(int closeCode, String closeMessage) {
+        this.closeCode = closeCode;
+        this.closeMessage = closeMessage;
+    }
+
     @Override
     public void write(final PacketOutputStream stream) throws IOException {
-        throw new NullPointerException("Fail write packet");
+        stream.write(closeCode);
+        stream.writeUTF(closeMessage);
     }
 
     @Override
@@ -37,7 +46,8 @@ public class AuthPacket implements Packet {
     @Override
     public void serverProcess(final WebSocket socket, final TNTUser user) {
         if (executor.getQueue().size() == executor.getMaximumPoolSize()) {
-            socket.close(101, "Auth server is overloading");
+            Server.serverSend(socket, new AuthPacket(5, "This server is overloading"));
+            socket.close();
         } else {
             if (TNTUser.keyUserList.containsKey(key)) {
                 final UUID realUUID = TNTUser.keyUserList.get(key).user;
@@ -45,20 +55,41 @@ public class AuthPacket implements Packet {
             }
 
             executor.execute(() -> {
-                if (Util.checkKey(this.user, key)) {
-                    socket.setAttachment(key);
+                int status = Util.checkKey(this.user, key);
+                switch (status) {
+                    case Util.GOOD_AUTH -> {
+                        socket.setAttachment(key);
 
-                    TNTClientBDManager.readOrCashUser(this.user, tntUser -> {
-                        final TNTUser account = tntUser == null ? new TNTUser(this.user, this.key, this.version) : tntUser;
-                        account.key = key;
-                        account.version = version;
-                        account.timeLogin = System.currentTimeMillis();
-                        TNTUser.addUser(account);
-                        TNTClientBDManager.writeUser(this.user, null);
-                        Server.serverSend(socket, new BlockModulesPacket(account.forceBlock, account.forceActive));
-                    });
-                } else {
-                    socket.close(102, "Fail login, maybe Hypixel API down");
+                        TNTClientBDManager.readOrCashUser(this.user, tntUser -> {
+                            final TNTUser account = tntUser == null ? new TNTUser(this.user, this.key, this.version) : tntUser;
+                            account.key = key;
+                            account.version = version;
+                            account.timeLogin = System.currentTimeMillis();
+                            TNTUser.addUser(account);
+                            TNTClientBDManager.writeUser(this.user, null);
+                            Server.serverSend(socket, new BlockModulesPacket(account.forceBlock, account.forceActive));
+                        });
+                    }
+                    case Util.FAIL_AUTH -> {
+                        Server.serverSend(socket, new AuthPacket(Util.FAIL_AUTH,
+                                "Fail authentication, incorrect user"));
+                        socket.close();
+                    }
+                    case Util.FAIL_CONNECTION -> {
+                        Server.serverSend(socket, new AuthPacket(Util.FAIL_CONNECTION,
+                                "Internal server error"));
+                        socket.close();
+                    }
+                    case Util.KEY_THROTTLING -> {
+                        Server.serverSend(socket, new AuthPacket(Util.KEY_THROTTLING,
+                                "Key throttling"));
+                        socket.close();
+                    }
+                    case Util.FAIL_PARSE -> {
+                        Server.serverSend(socket, new AuthPacket(Util.FAIL_PARSE,
+                                "Fail process the server data"));
+                        socket.close();
+                    }
                 }
             });
         }
