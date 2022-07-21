@@ -22,8 +22,12 @@ public class AuthPacket implements Packet {
     public UUID key;
     public String version;
 
-    private final int closeCode;
-    private final String closeMessage;
+    private int closeCode;
+    private String closeMessage;
+
+    public AuthPacket() {
+
+    }
 
     public AuthPacket(int closeCode, String closeMessage) {
         this.closeCode = closeCode;
