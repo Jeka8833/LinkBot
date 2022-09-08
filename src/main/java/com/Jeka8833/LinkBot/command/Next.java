@@ -51,7 +51,7 @@ public class Next implements Command {
                     .min().orElse(0);
 
             for (int i = 1; i < maxLessonsPerDay; i++) {
-                sb.append("♦️Пара: ").append(i).append("\nПропуск\n\n");
+                sb.append("♦️Пара: ").append(i).append("\n> Нема\n\n");
             }
 
             for (Lesson lesson : lessons) {

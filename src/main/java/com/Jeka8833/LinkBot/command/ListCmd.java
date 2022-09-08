@@ -46,7 +46,7 @@ public class ListCmd implements Command {
                             .append(lesson.lesson_type).append('`');
 
                     if (user.isSkipLesson(lesson.lesson_id)) {
-                        sb.append("**[Skipping]**");
+                        sb.append(" [Skipping]");
                     }
                     if (text.equalsIgnoreCase("root")) {
                         sb.append(" -> ").append(lesson.lesson_id);
