@@ -24,7 +24,8 @@ public class Next implements Command {
     public void receiveListener(Update update, String text) {
         final User user = Util.getUser(update.getMessage().getChatId());
         if (user == null) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "Ты кто? Напиши '/start', а уже потом '/now'");
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "",
+                    "Ты кто? Напиши '/start', а уже потом '/now'");
             return;
         }
         int day = KPI.getDay() + 1;
@@ -41,18 +42,28 @@ public class Next implements Command {
                 break;
         }
         if (lessons.isEmpty()) {
-            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "", "А у тебя пары вообще существуют?");
+            Util.sendMessage(pollingBot, update.getMessage().getChatId() + "",
+                    "А у тебя пары вообще существуют?");
         } else {
             StringBuilder sb = new StringBuilder("Расписание на " + Util.getDayName((day - 1)) + "\n");
+            int maxLessonsPerDay = lessons.stream()
+                    .mapToInt(value -> value.lesson_number)
+                    .min().orElse(0);
+
+            for (int i = 1; i < maxLessonsPerDay; i++) {
+                sb.append("♦️Пара: ").append(i).append("\nПропуск\n\n");
+            }
+
             for (Lesson lesson : lessons) {
-                sb.append("\uD83D\uDD39 Пара: ").append(lesson.lesson_number).append("(").append(lesson.time_start).append(" - ")
-                        .append(lesson.time_end).append(")")
+                sb.append("\uD83D\uDD39 Пара: ").append(lesson.lesson_number)
+                        .append("(").append(lesson.time_start).append(" - ").append(lesson.time_end).append(")")
                         .append("\nНазвание: ").append(lesson.lesson_name)
                         .append("\nТип: ").append(lesson.lesson_type)
                         .append(lesson.online ? " Онлайн" : "")
                         .append(lesson.choice ? " Факультатив" : "")
                         .append("\nПреподаватель: ").append(lesson.teacher_name)
-                        .append(lesson.online ? "\nСсылка: " + LinkBotDB.urls.getOrDefault(lesson.lesson_id, "-")
+                        .append(lesson.online ? "\nСсылка: " +
+                                LinkBotDB.urls.getOrDefault(lesson.lesson_id, "-")
                                 : "\nАудитория: " + lesson.lesson_class).append("\n\n");
 
             }

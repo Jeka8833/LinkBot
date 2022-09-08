@@ -9,7 +9,6 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Now implements Command {
 
@@ -27,13 +26,23 @@ public class Now implements Command {
                     "Ты кто? Напиши '/start', а уже потом '/now'");
             return;
         }
-        final List<Lesson> lessons = KPI.getDayLessons().stream().filter(lesson -> !user.isSkipLesson(lesson.lesson_id))
-                .collect(Collectors.toList());
+        List<Lesson> lessons = KPI.getDayLessons().stream()
+                .filter(lesson -> !user.isSkipLesson(lesson.lesson_id))
+                .toList();
+
         if (lessons.isEmpty()) {
             Util.sendMessage(pollingBot, update.getMessage().getChatId() + "",
                     "Сегодня пар не будет, если хочешь узнать пару на следующий день, напиши /next");
         } else {
             StringBuilder sb = new StringBuilder("Расписание на " + Util.getDayName(KPI.getDay()) + "\n");
+            int maxLessonsPerDay = lessons.stream()
+                    .mapToInt(value -> value.lesson_number)
+                    .min().orElse(0);
+
+            for (int i = 1; i < maxLessonsPerDay; i++) {
+                sb.append("♦️Пара: ").append(i).append("\nПропуск\n\n");
+            }
+
             for (Lesson lesson : lessons) {
                 if (lesson.timeToStart() > KPI.getTimeInSecond())
                     sb.append("\uD83D\uDD39");
