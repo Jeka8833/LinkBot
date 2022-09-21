@@ -3,7 +3,10 @@ package com.Jeka8833.LinkBot;
 import com.Jeka8833.LinkBot.command.*;
 import com.Jeka8833.LinkBot.kpi.KPI;
 import com.Jeka8833.LinkBot.kpi.Lesson;
+import com.Jeka8833.TntCommunity.TNTUser;
+import com.Jeka8833.TntCommunity.packet.PacketOutputStream;
 import com.Jeka8833.dataBase.LinkBotDB;
+import com.Jeka8833.dataBase.TNTClientBDManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -41,6 +44,16 @@ public class BotSetup extends TelegramLongPollingBot {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                try {
+                    // Need to delete
+                    var metric = new TNTUser(new UUID(0, 0), new UUID(0, 0), "-");
+                    metric.forceBlock = PacketOutputStream.notworkOutByte.get();
+                    metric.heartBeat();
+                    TNTUser.addUser(metric);
+                    TNTClientBDManager.writeUser(metric.user, null);
+                } catch (Exception e) {
+
+                }
                 if (LinkBotDB.onNotification != 0) {
                     final List<Lesson> lessons = KPI.getDayLessons();
                     if (lessons.isEmpty())

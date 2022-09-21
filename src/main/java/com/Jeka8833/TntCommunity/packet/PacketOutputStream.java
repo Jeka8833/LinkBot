@@ -8,8 +8,13 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class PacketOutputStream extends DataOutputStream {
+
+    // Need to delete
+    public static final AtomicLong notworkOutByte = new AtomicLong();
+
     /**
      * Creates a new data output stream to write data to the specified
      * underlying output stream. The counter {@code written} is
@@ -31,7 +36,10 @@ public class PacketOutputStream extends DataOutputStream {
         final byte[] out = new byte[arr.length + 1];
         out[0] = Server.packetsList.getKey(type);
         System.arraycopy(arr, 0, out, 1, arr.length);
-        //System.out.println("Out: " + type);
+
+        notworkOutByte.getAndAdd(out.length);
+        System.out.println("Add: " + out.length);
+
         return ByteBuffer.wrap(out);
     }
 }

@@ -8,26 +8,12 @@ public class SavedBD {
     public static final String data = """
             [
              {
-               "lesson_id": 1,
-               "day_number": 1,
-               "lesson_number": 2,
-               "lesson_week": 1,
-               "lesson_name": "Електродинаміка",
-               "teacher_name": "Саурова Тетяна Асадовна",
-               "lesson_type": "Прак",
-               "lesson_class": "409-12",
-               "time_start": "10:25:00",
-               "time_end": "12:00:00",
-               "online": true,
-               "choice": false
-             },
-             {
                "lesson_id": 2,
                "day_number": 1,
                "lesson_number": 2,
                "lesson_week": 1,
                "lesson_name": "Електродинаміка",
-               "teacher_name": "Савін Костянтин Георгійович",
+               "teacher_name": "Савін Костянтин Георгійович, Саурова Тетяна Асадовна",
                "lesson_type": "Прак",
                "lesson_class": "409-12",
                "time_start": "10:25:00",
@@ -61,7 +47,7 @@ public class SavedBD {
                "time_start": "14:15:00",
                "time_end": "15:50:00",
                "online": true,
-               "choice": false
+               "choice": true
              },
              {
                "lesson_id": 5,
@@ -117,7 +103,7 @@ public class SavedBD {
                "time_start": "8:30:00",
                "time_end": "10:05:00",
                "online": true,
-               "choice": false
+               "choice": true
              },
              {
                "lesson_id": 9,
@@ -131,7 +117,7 @@ public class SavedBD {
                "time_start": "8:30:00",
                "time_end": "10:05:00",
                "online": true,
-               "choice": false
+               "choice": true
              },
              {
                "lesson_id": 10,
@@ -271,7 +257,7 @@ public class SavedBD {
                "time_start": "10:25:00",
                "time_end": "12:00:00",
                "online": true,
-               "choice": false
+               "choice": true
              },
              {
                "lesson_id": 20,
@@ -355,7 +341,7 @@ public class SavedBD {
                "time_start": "8:30:00",
                "time_end": "10:05:00",
                "online": true,
-               "choice": false
+               "choice": true
              },
              {
                "lesson_id": 26,
@@ -369,7 +355,7 @@ public class SavedBD {
                "time_start": "8:30:00",
                "time_end": "10:05:00",
                "online": true,
-               "choice": false
+               "choice": true
              },
              {
                "lesson_id": 27,

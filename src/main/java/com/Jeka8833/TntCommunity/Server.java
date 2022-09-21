@@ -89,7 +89,8 @@ public class Server extends WebSocketServer {
     public static void serverSend(final WebSocket socket, final Packet packet) {
         try (final PacketOutputStream stream = new PacketOutputStream()) {
             packet.write(stream);
-            socket.send(stream.getByteBuffer(packet.getClass()));
+            if (socket.isOpen())
+                socket.send(stream.getByteBuffer(packet.getClass()));
         } catch (Exception e) {
             logger.error("Fail send packet:", e);
         }
@@ -107,6 +108,19 @@ public class Server extends WebSocketServer {
     public static void main(String[] args) {
         try {
             DatabaseManager.initConnect(Util.getParam(args, "-database_url"));
+
+            // Need to delete
+            // Read network out metric
+            TNTClientBDManager.readOrCashUser(new UUID(0, 0), tntUser -> {
+                if (tntUser == null) return;
+
+                long networkMetric = tntUser.forceBlock;
+                System.out.println("Read: " + networkMetric);
+                if (networkMetric > PacketOutputStream.notworkOutByte.get())
+                    PacketOutputStream.notworkOutByte.getAndAdd(networkMetric);
+            });
+
+
             server = new Server(new InetSocketAddress(Integer.parseInt(Util.getParam(args, "-port"))));
             server.start();
             TNTClientBDManager.init();

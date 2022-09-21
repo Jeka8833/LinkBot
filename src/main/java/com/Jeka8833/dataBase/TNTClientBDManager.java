@@ -166,7 +166,7 @@ public class TNTClientBDManager {
         }
 
         DatabaseManager.db.checkConnect();
-        DatabaseManager.db.statement.executeUpdate(sqlRequest.toString()); // Throw force exit
+        DatabaseManager.db.statement.executeUpdate(sqlRequest.toString()); // Maybe throw an exception
 
         for (UserQuire quire : userList)
             quire.callWrite(TNTUser.keyUserList.get(TNTUser.user2key.get(quire.user)));
