@@ -38,7 +38,6 @@ public class PacketOutputStream extends DataOutputStream {
         System.arraycopy(arr, 0, out, 1, arr.length);
 
         notworkOutByte.getAndAdd(out.length);
-        System.out.println("Add: " + out.length);
 
         return ByteBuffer.wrap(out);
     }
