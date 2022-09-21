@@ -37,7 +37,7 @@ public class PacketOutputStream extends DataOutputStream {
         out[0] = Server.packetsList.getKey(type);
         System.arraycopy(arr, 0, out, 1, arr.length);
 
-        notworkOutByte.getAndAdd(out.length);
+        notworkOutByte.getAndAdd(out.length + 14);
 
         return ByteBuffer.wrap(out);
     }
