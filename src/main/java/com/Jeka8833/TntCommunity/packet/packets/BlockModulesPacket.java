@@ -24,7 +24,7 @@ public class BlockModulesPacket implements Packet {
 
     @Override
     public void write(PacketOutputStream stream) throws IOException {
-        stream.writeLong(block | 1026);
+        stream.writeLong(block);
         stream.writeLong(active);
     }
 
